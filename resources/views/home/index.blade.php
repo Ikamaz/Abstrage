@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+  <head>
 
-    <h1>hello</h1>
+    @include('home.css')
 
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    @include('home.header')
+    <!-- Hero Section -->
+    @include('home.hero')
+    <!-- Product Gallery (Placeholder) -->
+    @include('home.gallery')
+    <!-- Footer -->
+    @include('home.footer')
 
-</body>
+  </body>
 </html>
