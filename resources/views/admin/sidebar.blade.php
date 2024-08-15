@@ -23,8 +23,7 @@
                         class="icon-windows"></i>Products </a>
                 <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
                     <li><a href="{{url('add_product')}}">Add Product</a></li>
-                    <li><a href="#">Page</a></li>
-                    <li><a href="#">Page</a></li>
+                    <li><a href="{{url('view_product')}}">view Product</a></li>
                 </ul>
             </li>
         </ul>
