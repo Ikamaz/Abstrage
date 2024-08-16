@@ -50,7 +50,7 @@
         <div class="page-header">
             <div class="container-fluid">
 
-                <h1>Add Product</h1>
+                <h1>დაამატე პროდუქცია</h1>
 
                 <div class="div_deg">
                     <form action="{{url('upload_product')}}" method="POST" enctype="multipart/form-data">
@@ -58,29 +58,34 @@
                         @csrf
 
                         <div class="input_deg">
-                            <label>Product Title</label>
+                            <label>კოდი</label>
+                            <input type="text" name="code" required>
+                        </div>
+
+                        <div class="input_deg">
+                            <label>სახელი</label>
                             <input type="text" name="title" required>
                         </div>
 
                         <div class="input_deg">
-                            <label>Description</label>
+                            <label>აღწერა</label>
                             <textarea name="description" required></textarea>
                         </div>
 
                         <div class="input_deg">
-                            <label>Price</label>
+                            <label>ფასი</label>
                             <input type="number" name="price">
                         </div>
 
                         <div class="input_deg">
-                            <label>Quantity</label>
+                            <label>რაოდენობა</label>
                             <input type="number" name="qty">
                         </div>
 
                         <div class="input_deg">
-                            <label>Product Category</label>
+                            <label>კატეგორია</label>
                             <select name="category" required>
-                                <option>Select a option</option>
+                                <option>აირჩიეთ კატეგორია</option>
 
                                 @foreach ($category as $category)
                                     <option value="{{ $category->category_name }}">{{ $category->category_name }}
@@ -90,12 +95,12 @@
                         </div>
 
                         <div class="input_deg">
-                            <label>Product Image</label>
+                            <label>ფოტო</label>
                             <input type="file" name="image">
                         </div>
 
                         <div class="input_deg">
-                            <input class="btn btn-success" type="submit" value="Add Product">
+                            <input class="btn btn-success" type="submit" value="დაამატე პროდუქცია">
                         </div>
                     </form>
 
@@ -106,14 +111,7 @@
         </div>
     </div>
     <!-- JavaScript files-->
-    <script src="{{ asset('/admincss/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/popper.js/umd/popper.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/jquery.cookie/jquery.cookie.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/jquery-validation/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('/admincss/js/charts-home.js') }}"></script>
-    <script src="{{ asset('/admincss/js/front.js') }}"></script>
+    @include('admin.js')
 </body>
 
 </html>

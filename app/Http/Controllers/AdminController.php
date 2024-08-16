@@ -22,7 +22,7 @@ class AdminController extends Controller
         $category = new Category;
         $category->category_name = $request->category;
         $category->save();
-        toastr()->timeOut(5000)->closeButton()->addSuccess('Category Added Successfully!');
+        toastr()->timeOut(5000)->closeButton()->addSuccess('კატეგორია დაემატა!');
         return redirect()->back();
     }
 
@@ -32,7 +32,7 @@ class AdminController extends Controller
 
         $data->delete();
 
-        toastr()->timeOut(5000)->closeButton()->addSuccess('Category Deleted Successfully!');
+        toastr()->timeOut(5000)->closeButton()->addSuccess('კატეგორია წაიშალა!');
 
         return redirect()->back();
     }
@@ -50,7 +50,7 @@ class AdminController extends Controller
         $data = Category::find($id);
         $data->category_name = $request->category;
         $data->save();
-        toastr()->timeOut(5000)->closeButton()->addSuccess('Category Updated Successfully');
+        toastr()->timeOut(5000)->closeButton()->addSuccess('კატეგორია განახლდა!');
         return redirect('/view_category');
 
     }
@@ -72,6 +72,8 @@ class AdminController extends Controller
 
         $data->price = $request->price;
 
+        $data->code = $request->code;
+
         $data->quantity = $request->qty;
 
         $data->category = $request->category;
@@ -89,7 +91,7 @@ class AdminController extends Controller
 
         $data->save();
 
-        toastr()->timeOut(5000)->closeButton()->addSuccess('Product Updated Successfully');
+        toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი დაემატა!');
 
         return redirect()->back();
     }
@@ -99,4 +101,59 @@ class AdminController extends Controller
 
         return view('admin.view_product', compact('product'));
     }
+
+    public function delete_product($id)
+    {
+        $data = Product::find($id);
+        $image_path = public_path('products/'.$data->image);
+        if (file_exists($image_path)) {
+            if (is_file($image_path)) {
+                unlink($image_path);
+            } else {
+                echo "Error: The path '$image_path' is not a file.";
+            }
+        } else {
+            echo "Error: The file '$image_path' does not exist.";
+        }
+        $data->delete();
+        toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი წაიშალა!');
+        return redirect()->back();
+    }
+
+    public function update_product($id)
+    {
+        $data = Product::find($id);
+
+        $category = Category::all();
+
+        return view('admin.update_page', compact('data', 'category'));
+
+    }
+
+    public function edit_product(Request $request, $id)
+    {
+        $data = Product::find($id);
+        $data->title = $request->title;
+        $data->description = $request->description;
+        $data->price = $request->price;
+        $data->code = $request->code;
+        $data->quantity = $request->quantity;
+        $data->category = $request->category;
+        $image = $request->image;
+        if($image)
+        {
+            $imagename = time().'.'.$image->getClientOriginalExtension();
+            $request->image->move('products', $imagename);
+            $data->image = $imagename;
+        }
+
+        $data->save();
+
+        toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი რედაქტირებულია!');
+
+        return redirect('/view_product');
+
+
+    }
+
 }

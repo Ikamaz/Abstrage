@@ -16,15 +16,13 @@
         .table_deg
         {
             border: 2px solid red;
-
-
         }
 
         th
         {
             background-color: red;
             color: black;
-            font-size: 19;
+            font-size: 20px;
             font-weight: bold;
             padding: 15px
         }
@@ -48,31 +46,42 @@
         <div class="page-header">
             <div class="container-fluid">
 
-                <h1>All Product</h1>
+                <h1 style="color: white">ყველა პროდუქცია</h1>
 
                 <div class="div_deg">
                     <table class="table_deg">
                         <tr>
-
+                            <th>კოდი</th>
                             <th>სახელი</th>
                             <th>აღწერა</th>
                             <th>კატეგორია</th>
                             <th>ფასი</th>
                             <th>რაოდენობა</th>
                             <th>ფოტო</th>
+                            <th>რედაქტირება</th>
+                            <th>წაშლა</th>
 
                         </tr>
 
                         @foreach($product as $products)
 
                         <tr>
+                            <td>{{$products->code}}</td>
                             <td>{{$products->title}}</td>
-                            <td>{!!Str::limit($products->description, 50)!!}</td>
+                            <td>{!!Str::limit($products->description, 30)!!}</td>
                             <td>{{$products->category}}</td>
                             <td>{{$products->price}}</td>
                             <td>{{$products->quantity}}</td>
                             <td>
                                 <img height="120px" width="120px" src="products/{{$products->image}}" alt="image">
+                            </td>
+
+                            <td>
+                                <a class="btn btn-success" href="{{url('update_product', $products->id)}}">რედაქტირება</a>
+                            </td>
+
+                            <td>
+                                <a class="btn btn-danger" onclick="confirmation(event)"  href="{{url('delete_product',$products->id)}}">წაშლა</a>
                             </td>
                         </tr>
 
@@ -91,14 +100,8 @@
         </div>
     </div>
     <!-- JavaScript files-->
-    <script src="{{ asset('/admincss/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/popper.js/umd/popper.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/jquery.cookie/jquery.cookie.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('/admincss/vendor/jquery-validation/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('/admincss/js/charts-home.js') }}"></script>
-    <script src="{{ asset('/admincss/js/front.js') }}"></script>
+
+    @include('admin.js')
 </body>
 
 </html>
