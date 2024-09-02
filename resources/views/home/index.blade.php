@@ -15,5 +15,8 @@
     <!-- Footer -->
     @include('home.footer')
 
+
+    @include('home.js')
   </body>
+
 </html>

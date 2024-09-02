@@ -65,12 +65,12 @@
 
                         <div>
                             <label>ფასი</label>
-                            <input type="number" name="price" value="{{$data->price}}">
+                            <input type="text" name="price" value="{{$data->price}}">
                         </div>
 
                         <div>
                             <label>რაოდენობა</label>
-                            <input type="number" name="qty" value="{{$data->quantity}}">
+                            <input type="text" name="qty" value="{{$data->quantity}}">
                         </div>
 
                         <div>

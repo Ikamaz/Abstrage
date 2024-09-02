@@ -11,7 +11,7 @@
             </div>
         </div>
         <!-- Sidebar Navidation Menus-->
-        <span class="heading">Main</span>
+        <span class="heading">ძირითადი</span>
         <ul class="list-unstyled">
             <li class="active"><a href="#"> <i class="icon-home"></i>მთავარი </a></li>
             <li>

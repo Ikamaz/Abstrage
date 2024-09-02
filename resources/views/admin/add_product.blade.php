@@ -74,12 +74,12 @@
 
                         <div class="input_deg">
                             <label>ფასი</label>
-                            <input type="number" name="price">
+                            <input type="text" name="price">
                         </div>
 
                         <div class="input_deg">
                             <label>რაოდენობა</label>
-                            <input type="number" name="qty">
+                            <input type="text" name="qty">
                         </div>
 
                         <div class="input_deg">

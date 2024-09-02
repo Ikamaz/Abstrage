@@ -1,28 +1,4 @@
-// Cart Functionality
-const cart = {
-  items: 0,
-  updateCartDisplay() {
-    const cartDisplay = document.querySelector('.cart .cart-text');
-    if (cartDisplay) {
-      cartDisplay.textContent = `კალათა ${this.items}`;
-    }
-  },
-  addItem() {
-    this.items += 1;
-    this.updateCartDisplay();
-  }
-};
 
-// Initialize Cart Event Listeners for Decoration Products
-function initializeCart() {
-  const addToCartButtons = document.querySelectorAll('.decor-product-card button');
-  addToCartButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      cart.addItem();
-      alert('Item added to cart!');
-    });
-  });
-}
 
 // Initialize Lightbox Functionality
 function openLightbox(image) {
@@ -93,21 +69,11 @@ function decorSortProducts() {
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
-  initializeCart();
   initializeLightbox();
   initializeCarousel();
 });
 
 
-  const authLinks = document.querySelector('.auth-links');
-  const cartLink = `<a href="cart.html">Cart</a>`;
-
-  // Simulated user login status (replace this with real logic)
-  const userLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-
-  if (userLoggedIn) {
-    authLinks.innerHTML = cartLink;
-  }
 
 // Example function to simulate user login (for testing)
 function simulateLogin() {
@@ -120,3 +86,9 @@ function simulateLogout() {
   localStorage.setItem('userLoggedIn', 'false');
   location.reload();
 }
+
+document.querySelector('#burger').addEventListener('click', function() {
+  this.classList.toggle('active');
+  document.querySelector('.nav-links').classList.toggle('active');
+  document.querySelector('.nav-product').classList.toggle('active');
+});

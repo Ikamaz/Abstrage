@@ -152,8 +152,22 @@ class AdminController extends Controller
         toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი რედაქტირებულია!');
 
         return redirect('/view_product');
-
-
     }
+
+    public function product_search(Request $request)
+    {
+        $search = $request->search;
+
+        $product = Product::where(function($query) use ($search) {
+                $query->where('title', 'LIKE', '%'.$search.'%')
+                      ->orWhere('code', 'LIKE', '%'.$search.'%')
+                      ->orWhere('category', 'LIKE', '%'.$search.'%')
+                      ->orWhere('price', 'LIKE', '%'.$search.'%');
+            })
+            ->paginate(5);
+
+        return view('admin.view_product', compact('product'));
+    }
+
 
 }

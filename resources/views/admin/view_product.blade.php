@@ -5,21 +5,18 @@
     @include('admin.css')
 
     <style type="text/css">
-
-        .div_deg
-        {
+        .div_deg {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 60px;
         }
-        .table_deg
-        {
+
+        .table_deg {
             border: 2px solid red;
         }
 
-        th
-        {
+        th {
             background-color: red;
             color: black;
             font-size: 20px;
@@ -27,13 +24,17 @@
             padding: 15px
         }
 
-        td
-        {
+        td {
             border: 1px solid red;
             text-align: center;
             color: white;
         }
 
+        input[type="search"] {
+            width: 500px;
+            height: 60px;
+            margin-left: 50px;
+        }
     </style>
 </head>
 
@@ -47,6 +48,14 @@
             <div class="container-fluid">
 
                 <h1 style="color: white">ყველა პროდუქცია</h1>
+
+                <form action="{{url('product_search')}}" method="GET">
+                    @csrf
+                    <input type="search" name="search">
+                    <input type="submit" class="btn btn-secondary" value="მოძებნა">
+                </form>
+
+
 
                 <div class="div_deg">
                     <table class="table_deg">
@@ -63,35 +72,36 @@
 
                         </tr>
 
-                        @foreach($product as $products)
+                        @foreach ($product as $products)
+                            <tr>
+                                <td>{{ $products->code }}</td>
+                                <td>{{ $products->title }}</td>
+                                <td>{!! Str::limit($products->description, 30) !!}</td>
+                                <td>{{ $products->category }}</td>
+                                <td>{{ $products->price }}</td>
+                                <td>{{ $products->quantity }}</td>
+                                <td>
+                                    <img height="120px" width="120px" src="products/{{ $products->image }}"
+                                        alt="image">
+                                </td>
 
-                        <tr>
-                            <td>{{$products->code}}</td>
-                            <td>{{$products->title}}</td>
-                            <td>{!!Str::limit($products->description, 30)!!}</td>
-                            <td>{{$products->category}}</td>
-                            <td>{{$products->price}}</td>
-                            <td>{{$products->quantity}}</td>
-                            <td>
-                                <img height="120px" width="120px" src="products/{{$products->image}}" alt="image">
-                            </td>
+                                <td>
+                                    <a class="btn btn-success"
+                                        href="{{ url('update_product', $products->id) }}">რედაქტირება</a>
+                                </td>
 
-                            <td>
-                                <a class="btn btn-success" href="{{url('update_product', $products->id)}}">რედაქტირება</a>
-                            </td>
-
-                            <td>
-                                <a class="btn btn-danger" onclick="confirmation(event)"  href="{{url('delete_product',$products->id)}}">წაშლა</a>
-                            </td>
-                        </tr>
-
+                                <td>
+                                    <a class="btn btn-danger" onclick="confirmation(event)"
+                                        href="{{ url('delete_product', $products->id) }}">წაშლა</a>
+                                </td>
+                            </tr>
                         @endforeach
                     </table>
 
                 </div>
 
                 <div class="div_deg">
-                    {{$product->onEachSide(1)->links()}}
+                    {{ $product->onEachSide(1)->links() }}
                 </div>
 
 

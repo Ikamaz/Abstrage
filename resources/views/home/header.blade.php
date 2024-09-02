@@ -1,23 +1,36 @@
 <nav>
-    <a href="index.html">
-        <div class="logo">ABSTRAGE</div>
-    </a>
-    <ul class="nav-links">
-        <li>
-            <a href="decoration.html">დეკორი</a>
-        </li>
-        <li>
-            <a href="gallery.html">გალერეა</a>
-        </li>
-        <li>
-            <a href="contact.html">კონტაქტი</a>
-        </li>
-    </ul>
-    <div class="auth-links">
-        <a href="{{url('/register')}}">რეგისტრაცია</a> | <a href="{{url('/login')}}">ავტორიზაცია</a>
+    <a href="{{ url('/dashboard') }}" class="logo">ABSTRAGE</a>
+
+    <div id="burger" class="burger">
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
-    <div class="cart">
-        <a href="cart.html" class="cart-text">კალათა 0</a>
-        <i class="fa-solid fa-basket-shopping cart-icon" style="color: #000;"></i>
+
+    <div class="nav-links">
+        <div class="nav-product">
+            <a href="decoration.html">დეკორი</a>
+            <a href="gallery.html">გალერეა</a>
+            <a href="contact.html">კონტაქტი</a>
+        </div>
+
+        @if (Route::has('login'))
+            @auth
+                <div class="header-actions">
+                    <form method="POST" action="{{ route('logout') }}" style="padding: 10px;">
+                        @csrf
+                        <input type="submit" class="logout-btn" value="გასვლა">
+                    </form>
+                    <div class="cart">
+                        <a href="cart.html" class="cart-text">კალათა 0</a>
+                    </div>
+                </div>
+            @else
+                <div class="auth-links">
+                    <a href="{{ url('/register') }}">რეგისტრაცია</a>
+                    <a href="{{ url('/login') }}">ავტორიზაცია</a>
+                </div>
+            @endauth
+        @endif
     </div>
 </nav>
