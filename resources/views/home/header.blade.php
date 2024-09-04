@@ -22,7 +22,7 @@
                         <input type="submit" class="logout-btn" value="გასვლა">
                     </form>
                     <div class="cart">
-                        <a href="cart.html" class="cart-text">კალათა 0</a>
+                        <a href="{{url('mycart')}}" class="cart-text">კალათა {{$count}}</a>
                     </div>
                 </div>
             @else
