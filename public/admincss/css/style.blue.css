@@ -9,7 +9,7 @@ Dark Admin Bootstrap Template by Bootstrapious.com
  */
 /*
 * ==========================================================
-*     GENERAL STYLING 
+*     GENERAL STYLING
 * ==========================================================
 */
 body {
@@ -763,7 +763,7 @@ nav#sidebar .sidebar-header p {
 }
 
 nav#sidebar .sidebar-header h1 {
-  color: #8a8d93;
+  color: #70777d;
 }
 
 nav#sidebar .sidebar-header p {
@@ -773,7 +773,7 @@ nav#sidebar .sidebar-header p {
 nav#sidebar span.heading {
   font-weight: 700;
   margin-left: 20px;
-  color: #494d53;
+  color: #70777d;
   font-size: 1.2rem;
   margin-bottom: 15px;
 }
@@ -882,7 +882,7 @@ nav#sidebar.shrinked span.heading {
   margin-left: 0;
   display: block;
   text-align: center;
-  font-size: 1rem;
+  font-size: 10px;
 }
 
 nav#sidebar.shrinked ul {
@@ -944,9 +944,9 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   }
   nav#sidebar span.heading {
     margin-left: 0;
-    display: block;
+    /* display: block; */
     text-align: center;
-    font-size: 1rem;
+    font-size: 10px;
   }
   nav#sidebar ul {
     max-height: none;
@@ -1677,7 +1677,7 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
 
 /*
 * ==========================================================
-*     FORMS 
+*     FORMS
 * ==========================================================
 */
 .form-control {
@@ -2087,8 +2087,8 @@ STYLE SWITCHER FOR DEMO
   z-index: 2000;
 }
 
-/* ========================================= 
-   THEMING OF BOOTSTRAP COMPONENTS           
+/* =========================================
+   THEMING OF BOOTSTRAP COMPONENTS
    ========================================= */
 /*
  * 1. NAVBAR
@@ -2814,7 +2814,7 @@ STYLE SWITCHER FOR DEMO
 }
 
 /*
- * 3. TYPE  
+ * 3. TYPE
  */
 body {
   font-family: "Muli", sans-serif;
