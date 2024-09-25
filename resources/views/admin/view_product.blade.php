@@ -4,7 +4,6 @@
 <head>
     @include('admin.css')
     <style type="text/css">
-
         .page-header h1 {
             color: white;
             text-align: center;
@@ -20,7 +19,8 @@
         }
 
         input[type="search"] {
-            width: 500px;
+            width: 100%;
+            max-width: 500px;
             height: 50px;
             padding: 10px;
             border-radius: 8px;
@@ -57,10 +57,12 @@
             align-items: center;
             margin-top: 60px;
             width: 100%;
+            overflow-x: auto;
         }
 
         .table_deg {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             overflow: hidden;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -138,6 +140,60 @@
 
         .pagination .page-link:hover {
             background-color: #e9ecef;
+        }
+
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2em;
+            }
+
+            form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input[type="search"] {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .btn {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .table_deg {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            td img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header h1 {
+                font-size: 1.8em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            td img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .btn-success, .btn-danger {
+                padding: 8px 15px;
+            }
         }
     </style>
 </head>

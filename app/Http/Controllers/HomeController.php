@@ -27,8 +27,6 @@ class HomeController extends Controller
 
         $delivered = Order::where('status','მიტანილია!')->get()->count();
 
-        // dd($adminNames);
-
         return view('admin.index', compact('user', 'product', 'order', 'delivered'));
     }
 

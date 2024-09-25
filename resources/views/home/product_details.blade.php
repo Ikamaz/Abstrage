@@ -30,7 +30,6 @@
                 <div class="product-actions">
                     <a href="{{ url('add_cart', $data->id) }}"><button class="add-to-cart">კალათში
                             დამატება</button></a>
-                    <button class="buy-now">გადანახვა</button>
                 </div>
             </div>
         </div>
