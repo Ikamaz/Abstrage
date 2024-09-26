@@ -48,7 +48,6 @@
             @endforeach
         </div>
 
-        <!-- Order Form Section -->
         <div class="order-container">
             <form action="{{ url('confirm_order') }}" method="POST">
 

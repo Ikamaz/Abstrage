@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Product;
-
-use \App\Models\User;
-
+use App\Models\User;
 use App\Models\Cart;
-
 use App\Models\Order;
 
 use Illuminate\Support\Facades\Auth;
@@ -176,5 +173,12 @@ class HomeController extends Controller
         }
 
         return redirect()->back()->with('ordered', true);
+    }
+
+    public function decoration()
+    {
+        $product = Product::all();
+
+        return view('home.decoration',compact('product'));
     }
 }

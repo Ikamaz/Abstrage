@@ -1,3 +1,4 @@
+
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="">
@@ -22,3 +23,18 @@
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css">
 
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css">
+
+<link rel="stylesheet" href="/admincss/css/fonts/fonts.css">
+
+<style>
+
+/* @import url("../../../public/admincss/css/fonts/fonts.css"); */
+
+body {
+    /* font-size: 16px;
+    font-weight: 400; */
+    font-family: "Noto Sans Georgian", "Noto Sans", sans-serif !important;
+    /* line-height: 1.6em; */
+}
+
+</style>

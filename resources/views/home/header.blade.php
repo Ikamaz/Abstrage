@@ -9,7 +9,7 @@
 
     <div class="nav-links">
         <div class="nav-product">
-            <a href="decoration.html">დეკორი</a>
+            <a href="{{ url('/decorations') }}">დეკორი</a>
             <a href="gallery.html">გალერეა</a>
             <a href="contact.html">კონტაქტი</a>
         </div>

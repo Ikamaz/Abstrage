@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->string('category')->nullable();
             $table->string('quantity')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

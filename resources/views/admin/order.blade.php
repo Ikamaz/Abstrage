@@ -145,6 +145,7 @@
                             <th>პროდუქტის სტატუსი</th>
                             <th>სტატუსის შეცვლა</th>
                             <th>PDF ამობეჭდვა</th>
+                            {{-- <th>წაშლა</th> --}}
                         </tr>
 
                         @foreach ($data as $data)
@@ -179,6 +180,9 @@
                             <td>
                                 <a class="btn btn-secondary" href="{{url('print_pdf', $data->id )}}">ამობეჭდვა</a>
                             </td>
+                            {{-- <td>
+                                <a class="btn btn" href=""></a>
+                            </td> --}}
                         </tr>
                         @endforeach
                     </table>

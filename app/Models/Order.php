@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
 
     public function user()
     {
@@ -18,4 +20,6 @@ class Order extends Model
     {
         return $this->hasOne(Product::class,'id','product_id');
     }
+
+
 }

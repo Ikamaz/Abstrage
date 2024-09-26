@@ -738,21 +738,6 @@ footer {
   border-radius: 0 0 12px 12px;
 }
 
-.btn {
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-family: 'BPG';
-}
-
-.btn:hover {
-  background-color: #388e3c;
-}
 
 
 /*Modal error */

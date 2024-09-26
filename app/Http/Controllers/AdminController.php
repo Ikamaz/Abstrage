@@ -105,9 +105,21 @@ class AdminController extends Controller
     }
 
     public function delete_product($id)
-    {
-        $data = Product::find($id);
-        $image_path = public_path('products/'.$data->image);
+{
+    // Find the product by ID
+    $data = Product::find($id);
+
+    // Check if the product exists
+    if ($data) {
+        // Delete associated orders
+        Order::where('product_id', $id)->delete();
+
+        $image_path = public_path('products/' . $data->image);
+
+        // Delete the product
+        $data->delete();
+
+        // Check if the image file exists and delete it
         if (file_exists($image_path)) {
             if (is_file($image_path)) {
                 unlink($image_path);
@@ -117,10 +129,16 @@ class AdminController extends Controller
         } else {
             echo "Error: The file '$image_path' does not exist.";
         }
-        $data->delete();
+
+        // Success message using toastr
         toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი წაიშალა!');
-        return redirect()->back();
+    } else {
+        toastr()->timeOut(5000)->closeButton()->addError('პროდუქტი ვერ მოიძებნა!');
     }
+
+    return redirect()->back();
+}
+
 
     public function update_product($id)
     {
