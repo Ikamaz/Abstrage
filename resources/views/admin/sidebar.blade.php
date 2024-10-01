@@ -7,7 +7,7 @@
                 @endif
             </div>
         </div>
-        <span class="heading">ატრიბუტები YLEO</span>
+        <span class="heading">ატრიბუტები</span>
         <ul class="list-unstyled">
             <li><a href="{{ url('admin/dashboard') }}"> <i class="icon-home"></i>მთავარი </a></li>
             <li>

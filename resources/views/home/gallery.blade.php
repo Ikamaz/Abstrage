@@ -1,13 +1,19 @@
 <section id="gallery" class="products">
 
-    @foreach($product as $products)
+    @foreach ($products as $product)
+        <div class="product-card">
+            @php
+                $firstImage = $product->images->first();
+            @endphp
 
-    <div class="product-card">
-        <img src="products/{{$products->image}}" alt="Product 1">
-        <h2>{{$products->title}}</h2>
-        <p>{{$products->price}} ლარი</p>
-        <a href="{{url('product_details', $products->id)}}"><button>იხილეთ დეტალურად</button></a>
-    </div>
-
+            @if ($firstImage)
+                <img class="product-image" src="/products/{{ $firstImage->image }}" alt="Product Image">
+            @else
+                <img class="product-image" src="default-image.jpg" alt="No Image Available">
+            @endif
+            <h2>{{ $product->title }}</h2>
+            <p>{{ $product->price }} ლარი</p>
+            <a href="{{ url('product_details', $product->id) }}"><button>იხილეთ დეტალურად</button></a>
+        </div>
     @endforeach
 </section>

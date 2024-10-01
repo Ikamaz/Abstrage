@@ -51,8 +51,8 @@ function initializeCarousel() {
 
 // Function to Sort Decoration Products
 function decorSortProducts() {
-  const productGrid = document.querySelector('.decor-product-grid');
-  const products = Array.from(document.querySelectorAll('.decor-product-card'));
+  const productGrid = document.querySelector('#decor-product-grid');
+  const products = Array.from(document.querySelectorAll('#decor-product-card'));
 
   const sortBy = document.getElementById('decor-sort').value;
 

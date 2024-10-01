@@ -29,7 +29,7 @@
                 <p>პროდუქტი დამატებულია კალათაში!</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn" onclick="closeModal()">დახურვა</button>
+                <button type="button" class="btn-close" onclick="closeModal()">დახურვა</button>
             </div>
         </div>
     </div>

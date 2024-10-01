@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'home']);
-Route::get('/decorations', [HomeController::class, 'decoration'])->name('decorations');
+Route::get('/all_products', [HomeController::class, 'all_products']);
+Route::get('/contact', [HomeController::class, 'contact']);
+Route::get('/product_gallery', [HomeController::class, 'product_gallery']);
 Route::get('product_details/{id}', [HomeController::class, 'product_details']);
-
-// Authentication & Dashboard
 Route::get('/dashboard', [HomeController::class, 'login_home'])->name('dashboard');
 
 // Cart Routes
@@ -47,6 +47,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('on_the_way/{id}', [AdminController::class, 'on_the_way']);
     Route::get('delivered/{id}', [AdminController::class, 'delivered']);
     Route::get('print_pdf/{id}', [AdminController::class, 'print_pdf']);
+    Route::delete('remove_image/{id}', [AdminController::class, 'remove_image']);
+;
 });
 
 require __DIR__.'/auth.php';

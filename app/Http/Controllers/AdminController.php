@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\ProductImage;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
@@ -47,7 +48,7 @@ class AdminController extends Controller
 
     }
 
-    public function update_category(Request $request ,$id)
+    public function update_category(Request $request, $id)
     {
         $data = Category::find($id);
         $data->category_name = $request->category;
@@ -69,29 +70,27 @@ class AdminController extends Controller
         $data = new Product;
 
         $data->title = $request->title;
-
         $data->description = $request->description;
-
         $data->price = $request->price;
-
         $data->code = $request->code;
-
         $data->quantity = $request->qty;
-
         $data->category = $request->category;
 
-        $image = $request->image;
-
-        if($image)
-        {
-            $imagename = time().'.'.$image->getClientOriginalExtension();
-
-            $request->image->move('products', $imagename);
-
-            $data->image = $imagename;
-        }
-
         $data->save();
+
+        // Handling multiple images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imagename = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('products'), $imagename);
+
+                // Store each image in a separate model or table (e.g., ProductImage)
+                $productImage = new ProductImage(); // Assuming you have a ProductImage model
+                $productImage->product_id = $data->id; // Link the image to the product
+                $productImage->image = $imagename;
+                $productImage->save();
+            }
+        }
 
         toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი დაემატა!');
 
@@ -99,45 +98,83 @@ class AdminController extends Controller
     }
     public function view_product()
     {
-        $product = Product::paginate(5);
+        // Fetch paginated products
+        $products = Product::paginate(5);
 
-        return view('admin.view_product', compact('product'));
-    }
+        // Initialize an empty array to store images
+        $productImages = [];
 
-    public function delete_product($id)
-{
-    // Find the product by ID
-    $data = Product::find($id);
-
-    // Check if the product exists
-    if ($data) {
-        // Delete associated orders
-        Order::where('product_id', $id)->delete();
-
-        $image_path = public_path('products/' . $data->image);
-
-        // Delete the product
-        $data->delete();
-
-        // Check if the image file exists and delete it
-        if (file_exists($image_path)) {
-            if (is_file($image_path)) {
-                unlink($image_path);
-            } else {
-                echo "Error: The path '$image_path' is not a file.";
-            }
-        } else {
-            echo "Error: The file '$image_path' does not exist.";
+        // Loop through the paginated products and fetch images for each
+        foreach ($products as $product) {
+            $productImages[$product->id] = ProductImage::where('product_id', $product->id)->get();
         }
 
-        // Success message using toastr
-        toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი წაიშალა!');
-    } else {
-        toastr()->timeOut(5000)->closeButton()->addError('პროდუქტი ვერ მოიძებნა!');
+        // Pass both products and their images to the view
+        return view('admin.view_product', compact('products', 'productImages'));
     }
 
-    return redirect()->back();
-}
+
+    public function delete_product($id)
+    {
+        // Find the product by ID
+        $data = Product::find($id);
+
+        if ($data) {
+            // Delete related orders for this product
+            Order::where('product_id', $id)->delete();
+
+            // Find all images related to this product in the ProductImage table
+            $productImages = ProductImage::where('product_id', $id)->get();
+
+            // Delete each product image file from the server
+            foreach ($productImages as $image) {
+                $image_path = public_path('products/' . $image->image);
+                if (file_exists($image_path)) {
+                    if (is_file($image_path)) {
+                        unlink($image_path); // Delete the file
+                    } else {
+                        echo "Error: The path '$image_path' is not a file.";
+                    }
+                } else {
+                    echo "Error: The file '$image_path' does not exist.";
+                }
+            }
+
+            // Now delete the product images from the database
+            ProductImage::where('product_id', $id)->delete();
+
+            // Delete the product itself
+            $data->delete();
+
+            // Success message
+            toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი და მისი სურათები წაიშალა!');
+        } else {
+            // Error message if product not found
+            toastr()->timeOut(5000)->closeButton()->addError('პროდუქტი ვერ მოიძებნა!');
+        }
+
+        // Redirect back to the previous page
+        return redirect()->back();
+    }
+
+    public function remove_image($id)
+    {
+        $image = ProductImage::find($id);
+        if ($image) {
+            $filePath = public_path('products/' . $image->image);
+            if (file_exists($filePath)) {
+                if (unlink($filePath)) {
+                    $image->delete(); // Delete the image record from the database
+                    return response()->json(['success' => true]);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'File deletion failed']);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'File does not exist']);
+            }
+        }
+        return response()->json(['success' => false, 'message' => 'Image not found']);
+    }
 
 
     public function update_product($id)
@@ -152,41 +189,47 @@ class AdminController extends Controller
 
     public function edit_product(Request $request, $id)
     {
-        $data = Product::find($id);
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->price = $request->price;
-        $data->code = $request->code;
-        $data->quantity = $request->quantity;
-        $data->category = $request->category;
-        $image = $request->image;
-        if($image)
-        {
-            $imagename = time().'.'.$image->getClientOriginalExtension();
-            $request->image->move('products', $imagename);
-            $data->image = $imagename;
+        $product = Product::find($id);
+        $product->code = $request->code;
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->quantity = $request->qty;
+        $product->category = $request->category;
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('products'), $filename);
+
+                // Save to the database
+                $image = new ProductImage();
+                $image->image = $filename;
+                $image->product_id = $product->id; // Assuming you have a product_id field
+                $image->save();
+            }
         }
 
-        $data->save();
+        $product->save();
 
-        toastr()->timeOut(5000)->closeButton()->addSuccess('პროდუქტი რედაქტირებულია!');
-
-        return redirect('/view_product');
+        // return redirect()->back()->with('success', 'Product updated successfully!');
+        return redirect('/view_product')->with('success', 'Product updated successfully!');
     }
+
 
     public function product_search(Request $request)
     {
         $search = $request->search;
 
-        $product = Product::where(function($query) use ($search) {
-                $query->where('title', 'LIKE', '%'.$search.'%')
-                      ->orWhere('code', 'LIKE', '%'.$search.'%')
-                      ->orWhere('category', 'LIKE', '%'.$search.'%')
-                      ->orWhere('price', 'LIKE', '%'.$search.'%');
-            })
+        $products = Product::where(function ($query) use ($search) {
+            $query->where('title', 'LIKE', '%' . $search . '%')
+                ->orWhere('code', 'LIKE', '%' . $search . '%')
+                ->orWhere('category', 'LIKE', '%' . $search . '%')
+                ->orWhere('price', 'LIKE', '%' . $search . '%');
+        })
             ->paginate(5);
 
-        return view('admin.view_product', compact('product'));
+        return view('admin.view_product', compact('products'));
     }
 
     public function view_orders()

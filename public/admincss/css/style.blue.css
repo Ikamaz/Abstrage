@@ -985,6 +985,24 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   }
 }
 
+.statistic-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Add hover effect for the entire block */
+.statistic-link:hover .statistic-block {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add a background color change on hover */
+.statistic-link:hover .statistic-block {
+  background-color: #f8f9fa;
+}
+
 /*
 * ==========================================================
 *     STATISTICS SECTION

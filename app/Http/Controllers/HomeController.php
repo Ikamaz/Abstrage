@@ -3,140 +3,84 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
 use App\Models\Order;
-
 use Illuminate\Support\Facades\Auth;
-
 
 class HomeController extends Controller
 {
+
     public function index()
     {
-        $user = User::where('usertype', 'user')->get()->count();
-
-        $product = Product::all()->count();
-
-        $order = Order::all()->count();
-
-        $delivered = Order::where('status','მიტანილია!')->get()->count();
+        $user = User::where('usertype', 'user')->count();
+        $product = Product::count();
+        $order = Order::count();
+        $delivered = Order::where('status', 'მიტანილია!')->count();
 
         return view('admin.index', compact('user', 'product', 'order', 'delivered'));
     }
 
     public function home()
     {
-        $product = Product::all();
+        $products = Product::all();
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
-
-        if (Auth::id())
-        {
-            $user = Auth::user();
-
-            $userid = $user->id;
-
-            $count = Cart::where('user_id', $userid)->count();
-        }
-        else
-        {
-            $count = '';
-        }
-
-
-
-        return view('home.index', compact('product', 'count'));
-
+        return view('home.index', compact('products', 'count'));
     }
 
     public function login_home()
     {
-        $product = Product::all();
-
-        if (Auth::id())
-        {
-            $user = Auth::user();
-
-            $userid = $user->id;
-
-            $count = Cart::where('user_id', $userid)->count();
-        }
-        else
-        {
-            $count = '';
-        }
-
-        return view('home.index', compact('product', 'count'));
+        return $this->home();
     }
 
     public function product_details($id)
     {
         $data = Product::find($id);
 
-
-
-        if (Auth::id())
-        {
-            $user = Auth::user();
-
-            $userid = $user->id;
-
-            $count = Cart::where('user_id', $userid)->count();
-        }
-        else
-        {
-            $count = '';
-        }
-
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
         return view('home.product_details', compact('data', 'count'));
     }
 
     public function add_cart($id)
-{
-    $user = Auth::user();
-    $user_id = $user->id;
+    {
+        $user = Auth::user();
+        $userid = $user->id;
 
-    $existing_cart_item = Cart::where('user_id', $user_id)
-                              ->where('product_id', $id)
-                              ->first();
+        $existing_cart_item = Cart::where('user_id', $userid)
+                                  ->where('product_id', $id)
+                                  ->first();
 
-    if ($existing_cart_item) {
-        return redirect()->back()->with('error', true);
-    } else {
-        $data = new Cart;
-        $data->user_id = $user_id;
-        $data->product_id = $id;
-        $data->save();
+        if ($existing_cart_item) {
+            return redirect()->back()->with('error', true);
+        }
+
+        Cart::create([
+            'user_id' => $userid,
+            'product_id' => $id,
+        ]);
 
         return redirect()->back()->with('success', true);
     }
-}
-
 
     public function mycart()
     {
-
-        if (Auth::id())
-        {
-            $user = Auth::user();
-
-            $userid = $user->id;
-
-            $count = Cart::where('user_id', $userid)->count();
-
-            $cart = Cart::where('user_id', $userid)->get();
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
+
+        $userid = Auth::id();
+        $count = Cart::where('user_id', $userid)->count();
+        $cart = Cart::where('user_id', $userid)->get();
 
         return view('home.mycart', compact('count', 'cart'));
     }
 
     public function delete_cart($id)
     {
-        $data = Cart::find($id);
-
+        $data = Cart::findOrFail($id);
         $data->delete();
 
         toastr()->timeOut(5000)->closeButton()->addSuccess('ნივთი წაიშალა!');
@@ -146,39 +90,45 @@ class HomeController extends Controller
 
     public function confirm_order(Request $request)
     {
-        $name = $request->input('name');
-        $address = $request->input('address');
-        $phone = $request->input('phone');
         $userid = Auth::user()->id;
         $cart = Cart::where('user_id', $userid)->get();
-        foreach($cart as $carts)
-        {
-            $order = new Order;
-            $order->name = $name;
-            $order->rec_address = $address;
-            $order->phone = $phone;
-            $order->user_id = $userid;
-            $order->product_id = $carts->product_id;
-            $order->save();
 
+        foreach ($cart as $carts) {
+            Order::create([
+                'name' => $request->input('name'),
+                'rec_address' => $request->input('address'),
+                'phone' => $request->input('phone'),
+                'user_id' => $userid,
+                'product_id' => $carts->product_id,
+            ]);
         }
 
-        $cart_remove = Cart::where('user_id', $userid)->get();
-
-        foreach($cart_remove as $remove)
-        {
-            $data = Cart::find($remove->id);
-
-            $data->delete();
-        }
+        Cart::where('user_id', $userid)->delete();
 
         return redirect()->back()->with('ordered', true);
     }
 
-    public function decoration()
+    public function all_products()
     {
-        $product = Product::all();
+        $products = Product::all();
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
-        return view('home.decoration',compact('product'));
+        return view('home.all_products', compact('products', 'count'));
     }
+
+    public function product_gallery(){
+
+        $products = Product::where('category', 'ნახატი')->with('images')->get();
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
+
+        return view('home.product_gallery', compact('count', 'products'));
+    }
+
+    public function contact()
+    {
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
+
+        return view('home.contact', compact( 'count'));
+    }
+
 }

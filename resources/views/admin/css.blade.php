@@ -1,4 +1,3 @@
-
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="">
@@ -13,28 +12,38 @@
 <link rel="shortcut icon" href="{{ asset('/admincss/img/favicon.ico') }}">
 
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
-
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-duotone-solid.css">
-
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-thin.css">
-
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css">
-
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css">
-
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css">
-
 <link rel="stylesheet" href="/admincss/css/fonts/fonts.css">
 
 <style>
+    body {
+        font-family: "Noto Sans Georgian", "Noto Sans", sans-serif !important;
+    }
 
-/* @import url("../../../public/admincss/css/fonts/fonts.css"); */
+    .number {
+        margin-left: 10px;
+    }
 
-body {
-    /* font-size: 16px;
-    font-weight: 400; */
-    font-family: "Noto Sans Georgian", "Noto Sans", sans-serif !important;
-    /* line-height: 1.6em; */
-}
+    .statistic-link {
+        text-decoration: none;
+        color: inherit;
+    }
 
+    .statistic-link:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .statistic-link {
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .statistic-link:hover {
+        transform: scale(1.05);
+    }
 </style>

@@ -127,9 +127,7 @@
 
 <body>
     @include('admin.header')
-
     @include('admin.sidebar')
-    <!-- Sidebar Navigation end-->
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
@@ -145,7 +143,6 @@
                             <th>პროდუქტის სტატუსი</th>
                             <th>სტატუსის შეცვლა</th>
                             <th>PDF ამობეჭდვა</th>
-                            {{-- <th>წაშლა</th> --}}
                         </tr>
 
                         @foreach ($data as $data)
@@ -180,9 +177,6 @@
                             <td>
                                 <a class="btn btn-secondary" href="{{url('print_pdf', $data->id )}}">ამობეჭდვა</a>
                             </td>
-                            {{-- <td>
-                                <a class="btn btn" href=""></a>
-                            </td> --}}
                         </tr>
                         @endforeach
                     </table>

@@ -70,8 +70,9 @@
             border-radius: 10px;
         }
 
-        th, td {
-            padding: 15px;
+        th,
+        td {
+            padding: 10px;
             text-align: center;
         }
 
@@ -97,7 +98,8 @@
             transform: scale(1.05);
         }
 
-        .btn-success, .btn-danger {
+        .btn-success,
+        .btn-danger {
             padding: 10px 20px;
             border-radius: 6px;
             transition: background-color 0.3s ease, transform 0.2s ease;
@@ -142,6 +144,32 @@
             background-color: #e9ecef;
         }
 
+        .image-gallery {
+            display: flex;
+            gap: 10px;
+            /* Space between images */
+            justify-content: center;
+            /* Center images */
+            flex-wrap: wrap;
+            /* Allow images to wrap on smaller screens */
+        }
+
+        .image-gallery img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            /* Ensure the images are cropped correctly */
+            border-radius: 6px;
+            /* Slight rounding for visual appeal */
+            transition: transform 0.3s ease;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.1);
+            /* Slight zoom on hover */
+        }
+
+
         /* Media queries for responsiveness */
         @media (max-width: 768px) {
             .page-header h1 {
@@ -167,7 +195,8 @@
                 font-size: 14px;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 10px;
             }
 
@@ -182,7 +211,8 @@
                 font-size: 1.8em;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 8px;
             }
 
@@ -191,7 +221,8 @@
                 height: 80px;
             }
 
-            .btn-success, .btn-danger {
+            .btn-success,
+            .btn-danger {
                 padding: 8px 15px;
             }
         }
@@ -226,31 +257,42 @@
                             <th>რედაქტირება</th>
                             <th>წაშლა</th>
                         </tr>
-                        @foreach ($product as $products)
-                        <tr>
-                            <td>{{ $products->code }}</td>
-                            <td>{{ $products->title }}</td>
-                            <td>{!! Str::limit($products->description, 30) !!}</td>
-                            <td>{{ $products->category }}</td>
-                            <td>{{ $products->price }}</td>
-                            <td>{{ $products->quantity }}</td>
-                            <td>
-                                <img height="120px" width="120px" src="products/{{ $products->image }}" alt="image">
-                            </td>
-                            <td>
-                                <a class="btn btn-success" href="{{ url('update_product', $products->id) }}">რედაქტირება</a>
-                            </td>
-                            <td>
-                                <a class="btn btn-danger" onclick="confirmation(event)" href="{{ url('delete_product', $products->id) }}">წაშლა</a>
-                            </td>
-                        </tr>
+                        @foreach ($products as $product)
+                            <tr>
+                                <td>{{ $product->code }}</td>
+                                <td>{{ $product->title }}</td>
+                                <td>{!! Str::limit($product->description, 30) !!}</td>
+                                <td>{{ $product->category }}</td>
+                                <td>{{ $product->price }}</td>
+                                <td>{{ $product->quantity }}</td>
+                                <td>
+                                    <div class="image-gallery">
+                                        @if (isset($productImages[$product->id]) && count($productImages[$product->id]) > 0)
+                                            <img src="/products/{{ $productImages[$product->id]->first()->image }}" alt="Product Image">
+                                        @else
+                                            <img src="/images/default.png" alt="No Image Available">
+                                        @endif
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-success"
+                                        href="{{ url('update_product', $product->id) }}">რედაქტირება</a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-danger" onclick="confirmation(event)"
+                                        href="{{ url('delete_product', $product->id) }}">წაშლა</a>
+                                </td>
+                            </tr>
                         @endforeach
+
                     </table>
                 </div>
 
                 <div class="div_deg pagination">
-                    {{ $product->onEachSide(1)->links() }}
+                    {{ $products->onEachSide(1)->links() }}
                 </div>
+
 
             </div>
         </div>

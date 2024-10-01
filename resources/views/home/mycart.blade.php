@@ -2,15 +2,13 @@
 <html lang="en">
 
 <head>
-
     @include('home.css')
-
 </head>
 
 <body>
-    <!-- Navigation Bar -->
+
     @include('home.header')
-    <!-- Cart Items -->
+
     <div class="main-container">
         <div class="cart-container">
             <h1>თქვენი კალათა</h1>
@@ -20,7 +18,17 @@
 
             @foreach ($cart as $cart)
                 <div class="cart-item">
-                    <img src="/products/{{ $cart->product->image }}" alt="Product">
+
+                    @if ($cart->product->images->first())
+                        <div class="image-container">
+                            <img src="/products/{{ $cart->product->images->first()->image }}" alt="Product" width="150">
+                        </div>
+                    @else
+                        <div class="image-container">
+                            <img src="/images/default.png" alt="No Image Available" width="150">
+                        </div>
+                    @endif
+
                     <div class="item-details">
                         <h2>{{ $cart->product->title }}</h2>
                         <p>კოდი: {{ $cart->product->code }}</p>
@@ -68,20 +76,16 @@
                     <input type="tel" id="phone" name="phone" value="{{ Auth::user()->phone }}">
                 </div>
 
-
                 <div class="order-total">ჯამი: {{ $value }} ლ</div>
 
                 <input type="submit" class="save-btn" value="გადანახვა">
             </form>
         </div>
     </div>
-    <!-- Footer -->
     @include('home.success-message')
-
     @include('home.footer')
-
-
     @include('home.js')
+
 </body>
 
 </html>
