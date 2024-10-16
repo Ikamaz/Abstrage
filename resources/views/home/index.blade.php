@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
 
     @include('home.css')
 
-  </head>
-  <body>
+</head>
+
+<body>
     <!-- Navigation Bar -->
     @include('home.header')
     <!-- Hero Section -->
@@ -17,6 +19,6 @@
 
 
     @include('home.js')
-  </body>
+</body>
 
 </html>

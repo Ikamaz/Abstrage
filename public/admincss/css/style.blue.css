@@ -880,7 +880,7 @@ nav#sidebar.shrinked .sidebar-header .title {
 
 nav#sidebar.shrinked span.heading {
   margin-left: 0;
-  display: block;
+  display: none;
   text-align: center;
   font-size: 10px;
 }
@@ -944,7 +944,7 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   }
   nav#sidebar span.heading {
     margin-left: 0;
-    /* display: block; */
+    display: none;
     text-align: center;
     font-size: 10px;
   }
@@ -998,6 +998,16 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
+.statistic-block a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Ensures the text color is inherited from the parent element */
+  }
+
+  .statistic-block a:hover {
+    text-decoration: none; /* Optional: ensures no underline on hover */
+  }
+
+
 /* Optional: Add a background color change on hover */
 .statistic-link:hover .statistic-block {
   background-color: #f8f9fa;
@@ -1014,6 +1024,16 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   background: #2d3035;
   color: #8a8d93;
 }
+
+.statistic-block a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Ensures the text color is inherited from the parent element */
+  }
+
+  .statistic-block a:hover {
+    text-decoration: none; /* Optional: ensures no underline on hover */
+  }
+
 
 .statistic-block .title {
   margin-bottom: 0;

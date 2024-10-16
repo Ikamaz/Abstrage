@@ -9,9 +9,11 @@
         "barryvdh/laravel-dompdf": "^3.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "maatwebsite/excel": "^3.1",
         "php-flasher/flasher-laravel": "^2.0",
         "php-flasher/flasher-symfony": "^2.0",
         "php-flasher/flasher-toastr-laravel": "^2.0",
+        "php-flasher/flasher-toastr-symfony": "^2.0",
         "realrashid/sweet-alert": "^7.2"
     },
     "require-dev": {

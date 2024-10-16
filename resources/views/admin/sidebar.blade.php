@@ -3,7 +3,7 @@
         <div class="sidebar-header d-flex align-items-center">
             <div class="title">
                 @if (Auth::check() && Auth::user()->usertype === 'admin')
-                    <h1 class="h4">გამარჯობა , {{ Auth::user()->name }}</h1>
+                    <h1 class="h4">გამარჯობა, {{ Auth::user()->name }}</h1>
                 @endif
             </div>
         </div>

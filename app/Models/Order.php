@@ -10,6 +10,14 @@ class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'name',        // Add this line
+        'product_id',  // Other fillable fields
+        'quantity',
+        'price',
+        'user_id',
+    ];
+    
 
     public function user()
     {

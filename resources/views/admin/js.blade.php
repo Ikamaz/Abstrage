@@ -41,3 +41,11 @@ function confirmation(ev) {
 <script src="{{ asset('/admincss/vendor/jquery-validation/jquery.validate.min.js') }}"></script>
 {{-- <script src="{{ asset('/admincss/js/charts-home.js') }}"></script> --}}
 <script src="{{ asset('/admincss/js/front.js') }}"></script>
+
+
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-duotone-solid.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-thin.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css">

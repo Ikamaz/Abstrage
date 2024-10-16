@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->longText('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('price')->nullable();
+            $table->decimal('price', 10, 2);
             $table->string('code')->nullable();
             $table->string('category')->nullable();
             $table->string('quantity')->nullable();
+            $table->boolean('is_ordered')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

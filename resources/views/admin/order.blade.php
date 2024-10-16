@@ -1,190 +1,277 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     @include('admin.css')
-
-    <style type="text/css">
+    <style>
         body {
-            background-color: #f4f4f4;
             margin: 0;
-            padding: 0;
-        }
-        table {
-            width: 100%;
-            max-width: 1000px;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            background-color: #2D3035;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        th, td {
-            padding: 15px;
-            text-align: center;
+        .d-flex {
+            flex: 1;
+            display: flex;
         }
 
-        th {
-            background-color: #333;
-            color: white;
-            font-size: 16px;
-        }
-
-        td {
-            color: #333;
-            font-size: 16px;
-        }
-        td img {
-            width: 100px;
-            height: auto;
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2D3035;
             border-radius: 8px;
-        }
-        .status-in-progress {
-            color: #FFA500;
-            font-weight: bold;
+            flex: 1;
+            /* Allow the container to grow and fill space */
         }
 
-        .status-on-the-way {
-            color: #63E6BE;
-            font-weight: bold;
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
         }
 
-        .status-delivered {
-            color: #FF0000;
-            font-weight: bold;
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 14px;
-            border-radius: 5px;
+
+        .filter-section input,
+        .filter-section select,
+        .bulk-actions button {
+            padding: 10px;
             margin: 5px;
-            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            flex: 1 1 50px;
+            /* min-width: 150px;  */
+            box-sizing: border-box;
+        }
+
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        p {
+            color: black;
+        }
+
+        .order-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: whitesmoke;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .order-card img {
+            max-width: 100px;
+            border-radius: 5px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .order-details {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        p {
+            color: #000000;
+        }
+
+        input {
+            color: #000000;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #fff;
+            margin-top: 10px;
+            display: inline-block;
         }
 
         .btn:hover {
-            opacity: 0.9;
+            transform: scale(1.05);
         }
 
-        /* Responsive adjustments */
+        .badge-in-progress {
+            background-color: orange;
+        }
+
+        .badge-on-the-way {
+            background-color: red;
+        }
+
+        .badge-saved {
+            background-color: #17a2b8;
+        }
+
+        .badge-delivered {
+            background-color: green;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
-            th, td {
-                font-size: 12px;
-                padding: 10px;
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
             }
 
-            td img {
-                width: 80px;
-            }
-
-            .btn {
-                padding: 8px 15px;
-                font-size: 12px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            table {
+            .filter-section input,
+            .filter-section select,
+            .bulk-actions button {
+                flex: 1 1 100%;
+                margin: 10px 0;
+                max-width: 100%;
                 width: 100%;
-                font-size: 12px;
             }
 
-            th, td {
-                display: block;
-                width: 100%;
-                text-align: left;
-                padding: 10px;
+            .bulk-actions {
+                flex-direction: column;
+                gap: 10px;
             }
 
-            th {
+            .order-card {
+                flex-direction: column;
+            }
+
+            .order-card img {
+                margin-bottom: 10px;
+            }
+
+            .order-details {
                 text-align: center;
             }
 
-            td img {
-                width: 100%;
-                max-width: 150px;
-                height: auto;
-                margin: 10px 0;
+            .order-actions {
+                flex-direction: column;
+                gap: 10px;
             }
-
-            .table_center {
-                padding: 0 10px;
+            .badge {
+                margin-bottom: 5px;
             }
         }
 
-        /* Flexbox centering */
-        .table_center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        @media (max-width: 480px) {
+            .order-card img {
+                max-width: 80px;
+            }
+
+            .order-details {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 
 <body>
     @include('admin.header')
-    @include('admin.sidebar')
-    <div class="page-content">
-        <div class="page-header">
-            <div class="container-fluid">
-                <div class="table_center">
-                    <table>
-                        <tr>
-                            <th>მიმღების სახელი</th>
-                            <th>მისამართი</th>
-                            <th>ტელეფონის ნომერი</th>
-                            <th>პროდუქტის სახელი</th>
-                            <th>ფასი</th>
-                            <th>ფოტო</th>
-                            <th>პროდუქტის სტატუსი</th>
-                            <th>სტატუსის შეცვლა</th>
-                            <th>PDF ამობეჭდვა</th>
-                        </tr>
 
-                        @foreach ($data as $data)
-                        <tr>
-                            <td>{{ $data->name }}</td>
-                            <td>{{ $data->rec_address }}</td>
-                            <td>{{ $data->phone }}</td>
-                            <td>{{ $data->product->title }}</td>
-                            <td>{{ $data->product->price }}</td>
-                            <td>
-                                <img src="/products/{{ $data->product->image }}" alt="image">
-                            </td>
+    <div class="d-flex">
+        @include('admin.sidebar')
 
-                            <td>
-                                @if ($data->status == 'in progress')
-                                <span class="status-in-progress">{{ $data->status }}</span>
-                                @elseif($data->status == 'გზაშია!')
-                                <span class="status-on-the-way">
-                                    <i class="fa-solid fa-truck"></i> {{ $data->status }}
-                                </span>
-                                @else
-                                <span class="status-delivered">
-                                    <i class="fa-solid fa-box-open"></i> {{ $data->status }}
-                                </span>
-                                @endif
-                            </td>
+        <div class="container">
+            <h1>შეკვეთების მენეჯმენტი</h1>
+            <div class="filter-section">
+                <form action="{{ route('admin.filter_orders') }}" method="GET">
+                    <input type="text" name="name" placeholder="კლიენტის სახელი" id="filter-name">
+                    <input type="text" name="product" placeholder="პროდუქციის სახელი" id="filter-product">
+                    <select name="status" id="filter-status">
+                        <option value="">ყველა სტატუსი</option>
+                        <option value="თქვენი შეკვეთა მუშავდება">თქვენი შეკვეთა მუშავდება</option>
+                        <option value="on the way">გზაშია</option>
+                        <option value="delivered">მიტანილია</option>
+                        <option value="saved">გადანახულია</option>
+                    </select>
+                    <div class="bulk-actions">
+                        <button type="submit" class="btn btn-secondary">ფილტრაცია</button>
+                        <button class="btn btn-success" id="export-csv"
+                            onclick="window.location='{{ route('export.excel') }}'">
+                            Excel<i class="fa-light fa-file-excel ml-2" style="color: #ffffff;"></i>
+                        </button>
+                    </div>
+                </form>
 
-                            <td>
-                                <a class="btn btn-success" href="{{ url('on_the_way', $data->id) }}">გზაშია!</a>
-                                <a class="btn btn-danger" href="{{ url('delivered', $data->id) }}">მიტანილია</a>
-                            </td>
-                            <td>
-                                <a class="btn btn-secondary" href="{{url('print_pdf', $data->id )}}">ამობეჭდვა</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </table>
-                </div>
+
             </div>
+
+            @foreach ($data as $order)
+                <div class="order-card">
+                    <img src="/products/{{ $order->product->images->first()->image }}" alt="Product Image">
+                    <div class="order-details">
+                        <p><strong>კლიენტის სახელი:</strong> {{ $order->name }}</p>
+                        <p><strong>ნივთი სახელი:</strong> {{ $order->product->title }}</p>
+                        <p><strong>მისამართი:</strong> <input type="text" class="editable-input"
+                                value="{{ $order->rec_address }}" style="border:none; background: transparent;"></p>
+                        <p><strong>საკონტაქტო ნომერი:</strong> <input type="text" class="editable-input"
+                                value="{{ $order->phone }}" style="border:none; background: transparent;"></p>
+                        <p><strong>ფასი:</strong> {{ $order->product->price }}</p>
+                        <span
+                            class="badge
+                        @if ($order->status == 'in progress' || $order->status == 'თქვენი შეკვეთა მუშავდება') badge-in-progress
+                        @elseif($order->status == 'on the way' || $order->status == 'გზაშია!') badge-on-the-way
+                        @elseif($order->status == 'saved' || $order->status == 'გადანახულია!') badge-saved
+                        @else badge-delivered @endif">
+                            @if ($order->status == 'in progress' || $order->status == 'თქვენი შეკვეთა მუშავდება')
+                                <span class="status-in-progress">{{ $order->status }}</span>
+                            @elseif($order->status == 'on the way' || $order->status == 'გზაშია!')
+                                <span class="status-on-the-way">
+                                    <i class="fa-solid fa-truck"></i> გზაშია!
+                                </span>
+                            @elseif($order->status == 'saved' || $order->status == 'გადანახულია!')
+                                <span class="status-saved">
+                                    <i class="fa-solid fa-box-circle-check" style="color: #ffffff;"></i> გადანახულია!
+                                </span>
+                            @else
+                                <span class="status-delivered">
+                                    <i class="fa-solid fa-box-open"></i> მიტანილია!
+                                </span>
+                            @endif
+                        </span>
+                    </div>
+                    <div class="order-actions">
+                        <a href="{{ url('on_the_way', $order->id) }}" class="btn btn-danger">გზაშია</a>
+                        <a href="{{ url('delivered', $order->id) }}" class="btn btn-success">მიტანილია</a>
+                        <a href="{{ url('saved', $order->id) }}" class="btn btn-info">გადანახულია</a>
+                        <a href="{{ url('print_pdf', $order->id) }}" class="btn btn-primary">PDF</a>
+                        <a href="{{ url('send_invoice', $order->id) }}" class="btn btn-error">ინვოისის გაგზავნა</a>
+                        <button class="btn btn-light" onclick="confirmCancel({{ $order->id }})">გაუქმება</button>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
-    <!-- JavaScript files-->
+
+    {{ $data->links() }}
+
+    <script>
+        function confirmCancel(orderId) {
+            if (confirm('დარწმუნებული ხარ ამ შეკვეთის გაუქმება გინდა ?')) {
+                window.location.href = `/cancel_order/${orderId}`;
+            }
+        }
+    </script>
+
     @include('admin.js')
 </body>
 

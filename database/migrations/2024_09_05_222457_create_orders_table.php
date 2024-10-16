@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('rec_address')->nullable();
             $table->string('phone')->nullable();
-            $table->string('status')->default('in progress');
+            $table->string('status')->default('თქვენი შეკვეთა მუშავდება');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('product_id');
 

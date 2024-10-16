@@ -1,17 +1,4 @@
-/*
-==============================================================
-==============================================================
 
-Dark Admin Bootstrap Template by Bootstrapious.com
-
-==============================================================
-==============================================================
- */
-/*
-* ==========================================================
-*     GENERAL STYLING 
-* ==========================================================
-*/
 body {
   position: relative;
 }
@@ -867,7 +854,7 @@ nav#sidebar li li.active > a {
 }
 
 nav#sidebar.shrinked {
-  width: 80px;
+  width: 100px;
 }
 
 nav#sidebar.shrinked .sidebar-header {
@@ -878,9 +865,13 @@ nav#sidebar.shrinked .sidebar-header .title {
   display: none;
 }
 
+.heading-mobile{
+    display: none;
+}
+
 nav#sidebar.shrinked span.heading {
   margin-left: 0;
-  display: block;
+  display: none;
   text-align: center;
   font-size: 1rem;
 }
@@ -996,6 +987,16 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
   background: #2d3035;
   color: #8a8d93;
 }
+
+.statistic-block a {
+  text-decoration: none; /* Remove underline from links */
+  color: inherit; /* Ensures the text color is inherited from the parent element */
+}
+
+.statistic-block a:hover {
+  text-decoration: none; /* Optional: ensures no underline on hover */
+}
+
 
 .statistic-block .title {
   margin-bottom: 0;
@@ -1677,7 +1678,7 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
 
 /*
 * ==========================================================
-*     FORMS 
+*     FORMS
 * ==========================================================
 */
 .form-control {
@@ -2087,8 +2088,8 @@ STYLE SWITCHER FOR DEMO
   z-index: 2000;
 }
 
-/* ========================================= 
-   THEMING OF BOOTSTRAP COMPONENTS           
+/* =========================================
+   THEMING OF BOOTSTRAP COMPONENTS
    ========================================= */
 /*
  * 1. NAVBAR
@@ -2814,7 +2815,7 @@ STYLE SWITCHER FOR DEMO
 }
 
 /*
- * 3. TYPE  
+ * 3. TYPE
  */
 body {
   font-family: "Muli", sans-serif;
@@ -2832,7 +2833,8 @@ a {
 
 a:focus, a:hover {
   color: #c52e41;
-  text-decoration: underline;
+  text-decoration: none;
+  transform: scale(1.05);
 }
 
 h1,

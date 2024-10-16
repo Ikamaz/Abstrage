@@ -170,8 +170,7 @@
             </div>
         </div>
     </div>
-
-    <!-- JavaScript for Image Preview -->
+    
     <script>
         function previewImages(event) {
             var preview = document.getElementById('imagePreview');

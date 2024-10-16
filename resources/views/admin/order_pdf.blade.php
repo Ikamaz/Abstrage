@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,6 +75,10 @@
         border-bottom: 2px solid #000;
     }
 
+    .product-info img {
+        width: 50%;
+    }
+
     .product-details {
         max-width: 50%;
     }
@@ -88,7 +93,7 @@
     }
 
     .product-image img {
-        width: 100%;
+        width: 50%;
         border: 1px solid #000;
         padding: 5px;
         align-items: center;
@@ -105,24 +110,22 @@
     }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <p class="header-p"><strong>შეკვეთის ინფორმაცია</strong></p>
 
         <div class="info">
-            <p><strong>მომხმარებლის სახელი:</strong> {{$data->name}}</p>
-            <p><strong>მომხმარებლის მისამართი:</strong> {{$data->rec_address}}</p>
-            <p><strong>მომხმარებლის ტელეფონის ნომერი:</strong> {{$data->phone}}</p>
+            <p><strong>კლიენტის სახელი:</strong> {{ $order->name }}</p>
+            <p><strong>კლიენტის მისამართი:</strong> {{ $order->rec_address }}</p>
+            <p><strong>კლიენტის ტელეფონის ნომერი:</strong> {{ $order->phone }}</p>
+            <p><strong>კლიენტის სტატუსი:</strong> {{ $order->status }}</p>
         </div>
         <div class="product-info">
-            <div class="product-details">
-                <p><strong>პროდუქტის დასახელება: </strong>{{$data->product->title}}</p>
-                <p><strong>პროდუქტის ფასი: </strong> {{$data->product->price}} ლარი</p>
-            </div>
-            <div class="product-image">
-                <img src="products/{{$data->product->image}}" alt="Product Image">
-            </div>
+            <img src="{{ public_path('products/' . $order->product->images->first()->image) }}" alt="Product Image">
+            <p><strong>პროდუქციის სახელი:</strong> {{ $order->product->title }}</p>
+            <p><strong>ფასი:</strong> {{ $order->product->price }}</p>
         </div>
         <div class="footer">
             <p>Abstrage</p>
@@ -130,4 +133,5 @@
     </div>
 
 </body>
+
 </html>

@@ -4,72 +4,204 @@
 <head>
     @include('home.css')
     <style>
-        .modal-content {
-            max-width: 90%;
-            margin: auto;
+        /* General Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .text-center {
+            margin-bottom: 30px;
+        }
+
+        /* Filter Button */
         .filter-btn {
-            margin: 20px;
-            padding: 10px 20px;
             background-color: #343a40;
             color: #fff;
+            padding: 10px 20px;
             border: none;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .filter-btn:hover {
             background-color: #495057;
         }
 
-        @media (max-width: 768px) {
-            .modal-content {
-                width: 100%;
-            }
-
-            .close-btn {
-                text-align: center;
-                justify-content: center;
-                align-items: center;
-                justify-self: center
-            }
-        }
-
-        .modal-dialog {
-            max-width: 800px;
-        }
-
-        .modal-header {
-            justify-content: center;
-        }
-
+        /* Product Grid */
         .product-grid {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
         }
 
         .product-item {
-            flex: 1 0 30%;
+            flex: 1 1 30%;
             max-width: 30%;
-            margin: 10px;
+            box-sizing: border-box;
+        }
+
+        .product-card {
+            border: none;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .btn-outline-dark {
+            border-color: #343a40;
+            color: #343a40;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        /* Pagination & Filter Modal */
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-header h5 {
+            font-size: 1.5rem;
+        }
+
+        .modal-body label {
+            font-size: 1.1rem;
+        }
+
+        .modal-footer {
+            padding: 15px;
+        }
+
+        /* Per-page Dropdown */
+        #per_page {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .product-item {
+                flex: 1 1 45%;
+                max-width: 45%;
+            }
+
+            .modal-dialog {
+                max-width: 80%;
+            }
         }
 
         @media (max-width: 768px) {
             .product-item {
-                flex: 1 0 45%;
-                max-width: 45%;
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                font-size: 1rem;
+                padding: 8px 15px;
+            }
+
+            .filter-btn {
+                padding: 8px 15px;
             }
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: 480px) {
             .product-item {
-                flex: 1 0 100%;
+                flex: 1 1 100%;
                 max-width: 100%;
+                margin: 0 auto; /* Center product items */
+            }
+
+            .product-card {
+                padding: 15px;
+            }
+
+            .card-img-top {
+                height: 180px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn, .filter-btn {
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .product-grid {
+                padding: 0 10px; /* Add padding to prevent content touching the edges */
+            }
+
+            .product-item {
+                flex: 1 1 100%;
+                max-width: 100%;
+                margin: 0 auto; /* Center product items */
+            }
+
+            .product-card {
+                padding: 10px;
+            }
+
+            .card-img-top {
+                height: 150px;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn, .filter-btn {
+                padding: 5px 8px;
             }
         }
     </style>
+
+
 </head>
 
 <body>
@@ -78,183 +210,115 @@
     <section id="decorations" class="decor-products">
         <div class="container">
             <h1 class="text-center">ჩვენი პროდუქცია</h1>
+
             <div class="text-center">
                 <button class="filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal">ფილტრაცია</button>
             </div>
-            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel"
-                aria-hidden="true">
+
+            <!-- Filter Modal -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="filterModalLabel">ფილტრაციის პარამეტრები</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="decor-sort" class="form-label">ფასის ფილტრაცია</label>
-                                    <select id="decor-sort" class="form-select" onchange="decorSortProducts()">
-                                        <option>აირჩიე ფილტრაცია</option>
-                                        <option value="price-asc">ფასი: ზრდადი</option>
-                                        <option value="price-desc">ფასი: კლებადი</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="decor-category" class="form-label">კატეგორია</label>
-                                    <select id="decor-category" class="form-select"
-                                        onchange="filterProductsByCategory()">
-                                        <option value="all">ყველა</option>
-                                        <option value="ნახატი">ნახატი</option>
-                                        <option value="დეკორაცია">დეკორაცია</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="price-range" class="form-label">ფასის დიაპაზონი</label>
-                                    <div class="d-flex">
-                                        <input type="number" id="min-price" placeholder="მინიმალური" class="form-control me-2"
-                                            oninput="filterByPriceRange()">
-                                        <input type="number" id="max-price" placeholder="მაქსიმალური" class="form-control"
-                                            oninput="filterByPriceRange()">
+                            <form action="{{ route('products.index') }}" method="GET">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sort" class="form-label">ფასის ფილტრაცია</label>
+                                        <select name="sort" id="sort" class="form-select">
+                                            <option value="">აირჩიე ფილტრაცია</option>
+                                            <option value="price-asc" {{ request('sort') == 'price-asc' ? 'selected' : '' }}>ფასი: ზრდადი</option>
+                                            <option value="price-desc" {{ request('sort') == 'price-desc' ? 'selected' : '' }}>ფასი: კლებადი</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="category" class="form-label">კატეგორია</label>
+                                        <select name="category" id="category" class="form-select">
+                                            <option value="all">ყველა</option>
+                                            @foreach ($uniqueCategories as $category)
+                                            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="min_price" class="form-label">ფასის დიაპაზონი</label>
+                                        <div class="d-flex">
+                                            <input type="number" name="min_price" value="{{ request('min_price') }}" id="min_price" placeholder="მინიმალური" class="form-control me-2" min="0">
+                                            <input type="number" name="max_price" value="{{ request('max_price') }}" id="max_price" placeholder="მაქსიმალური" class="form-control" min="0">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sort_date" class="form-label">თარიღი</label>
+                                        <select name="sort_date" id="sort_date" class="form-select">
+                                            <option value="">აირჩიე თარიღი</option>
+                                            <option value="newest" {{ request('sort_date') == 'newest' ? 'selected' : '' }}>ახალი</option>
+                                            <option value="oldest" {{ request('sort_date') == 'oldest' ? 'selected' : '' }}>ძველი</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="keyword-search" class="form-label">ძიება</label>
-                                    <input type="text" id="keyword-search" class="form-control"
-                                        onkeyup="searchByKeyword()" placeholder="საძიებო სიტყვა">
+
+                                <div class="modal-footer d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary">გაფილტვრა</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">დახურვა</button>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="sort-date" class="form-label">თარიღი</label>
-                                    <select id="sort-date" class="form-select" onchange="sortByDate()">
-                                        <option value="newest">ახალი</option>
-                                        <option value="oldest">ძველი</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <button type="button" class="btn btn-secondary close-btn" data-bs-dismiss="modal">დახურვა</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Product Grid -->
             <div class="product-grid" id="product-grid">
                 @foreach ($products as $product)
-                    <div class="col-lg-4 col-md-6 mb-4 product-item" data-price="{{ $product->price }}"
-                        data-category="{{ $product->category }}" data-date="{{ $product->created_at }}">
-                        <div class="card product-card shadow-sm">
-                            @php
-                                $firstImage = $product->images->first();
-                            @endphp
-
-                            @if ($firstImage)
-                                <img src="/products/{{ $firstImage->image }}" alt="{{ $product->title }}"
-                                    class="card-img-top">
-                            @else
-                                <img src="default-image.jpg" alt="No Image Available" class="card-img-top">
-                            @endif
-
-                            <div class="card-body text-center">
-                                <h2 class="card-title">{{ $product->title }}</h2>
-                                <p class="card-text">{{ $product->price }} ლ</p>
-                                <a href="{{ url('product_details', $product->id) }}" class="btn btn-outline-dark">ნახეთ
-                                    დეტალურად</a>
-                            </div>
+                <div class="col-lg-4 col-md-6 mb-4 product-item">
+                    <div class="card product-card shadow-sm">
+                        @php
+                        $firstImage = $product->images->first();
+                        @endphp
+                        <img src="{{ $firstImage ? '/products/' . $firstImage->image : 'default-image.jpg' }}" alt="{{ $product->title }}" class="card-img-top">
+                        <div class="card-body text-center">
+                            <h2 class="card-title">{{ $product->title }}</h2>
+                            <p class="card-text">{{ $product->price }} ლ</p>
+                            <a href="{{ url('product_details', $product->id) }}" class="btn btn-outline-dark">ნახეთ დეტალურად</a>
                         </div>
                     </div>
+                </div>
                 @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <label for="per_page">პროდუქციის რაოდენობა ერთ გვერდზე </label>
+                    <select id="per_page" onchange="updatePerPage(this.value)">
+                        <option value="9" {{ request('per_page') == 9 ? 'selected' : '' }}>9</option>
+                        <option value="18" {{ request('per_page') == 18 ? 'selected' : '' }}>18</option>
+                        <option value="27" {{ request('per_page') == 27 ? 'selected' : '' }}>27</option>
+                    </select>
+                </div>
+                <div>
+                    {{ $products->links() }}
+                </div>
             </div>
         </div>
     </section>
 
-    @include('home.success-message')
     @include('home.footer')
-    @include('home.js')
 
     <script>
-        function decorSortProducts() {
-            var sortOption = document.getElementById('decor-sort').value;
-            var productsContainer = document.getElementById('product-grid');
-            var products = Array.from(productsContainer.getElementsByClassName('product-item'));
-
-            products.sort(function(a, b) {
-                var priceA = parseFloat(a.getAttribute('data-price'));
-                var priceB = parseFloat(b.getAttribute('data-price'));
-
-                if (sortOption === 'price-asc') {
-                    return priceA - priceB;
-                } else if (sortOption === 'price-desc') {
-                    return priceB - priceA;
-                }
-            });
-
-            productsContainer.innerHTML = '';
-            products.forEach(function(product) {
-                productsContainer.appendChild(product);
-            });
-        }
-
-        function filterProductsByCategory() {
-            var selectedCategory = document.getElementById('decor-category').value;
-            var products = Array.from(document.getElementsByClassName('product-item'));
-
-            products.forEach(function(product) {
-                var productCategory = product.getAttribute('data-category');
-                if (selectedCategory === 'all' || productCategory === selectedCategory) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        function filterByPriceRange() {
-            var minPrice = parseFloat(document.getElementById('min-price').value) || 0;
-            var maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
-            var products = Array.from(document.getElementsByClassName('product-item'));
-
-            products.forEach(function(product) {
-                var productPrice = parseFloat(product.getAttribute('data-price'));
-                if (productPrice >= minPrice && productPrice <= maxPrice) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        function searchByKeyword() {
-            var keyword = document.getElementById('keyword-search').value.toLowerCase();
-            var products = Array.from(document.getElementsByClassName('product-item'));
-
-            products.forEach(function(product) {
-                var productTitle = product.getElementsByClassName('card-title')[0].innerText.toLowerCase();
-                if (productTitle.includes(keyword)) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        function sortByDate() {
-            var sortOption = document.getElementById('sort-date').value;
-            var productsContainer = document.getElementById('product-grid');
-            var products = Array.from(productsContainer.getElementsByClassName('product-item'));
-
-            products.sort(function(a, b) {
-                var dateA = new Date(a.getAttribute('data-date'));
-                var dateB = new Date(b.getAttribute('data-date'));
-
-                return sortOption === 'newest' ? dateB - dateA : dateA - dateB;
-            });
-
-            productsContainer.innerHTML = '';
-            products.forEach(function(product) {
-                productsContainer.appendChild(product);
-            });
+        function updatePerPage(value) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('per_page', value);
+            window.location.search = urlParams.toString();
         }
     </script>
-</body>
+    @include('home.js')
 
+</body>
 </html>

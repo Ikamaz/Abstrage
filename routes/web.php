@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'home']);
-Route::get('/all_products', [HomeController::class, 'all_products']);
+Route::get('all_products', [HomeController::class, 'all_products'])->name('products.index');
+
 Route::get('/contact', [HomeController::class, 'contact']);
 Route::get('/product_gallery', [HomeController::class, 'product_gallery']);
 Route::get('product_details/{id}', [HomeController::class, 'product_details']);
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('mycart', [HomeController::class, 'mycart']);
     Route::get('delete_cart/{id}', [HomeController::class, 'delete_cart']);
     Route::post('confirm_order', [HomeController::class, 'confirm_order']);
+    Route::get('myorders', [HomeController::class, 'myorders']);
 });
 
 // Profile Routes
@@ -44,11 +46,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('edit_product/{id}', [AdminController::class, 'edit_product']);
     Route::get('product_search', [AdminController::class, 'product_search']);
     Route::get('view_orders', [AdminController::class, 'view_orders']);
-    Route::get('on_the_way/{id}', [AdminController::class, 'on_the_way']);
-    Route::get('delivered/{id}', [AdminController::class, 'delivered']);
-    Route::get('print_pdf/{id}', [AdminController::class, 'print_pdf']);
+    Route::get('print_pdf/{id}', [AdminController::class, 'printPDF']);
     Route::delete('remove_image/{id}', [AdminController::class, 'remove_image']);
-;
+    Route::get('on_the_way/{id}', [AdminController::class, 'markOnTheWay']);
+    Route::get('delivered/{id}', [AdminController::class, 'markDelivered']);
+    Route::get('saved/{id}', [AdminController::class, 'markSaved']);
+    Route::get('cancel_order/{id}', [AdminController::class, 'cancelOrder']);
+    Route::get('send_invoice/{id}', [AdminController::class, 'sendInvoice']);
+    Route::get('export-excel', [AdminController::class, 'exportExcel'])->name('export.excel');
+    Route::get('view_users', [AdminController::class, 'view_users']);
+    Route::get('edit_user/{id}', [AdminController::class, 'edit_user']);
+    Route::put('update_user/{id}', [AdminController::class, 'update_user']);
+    Route::delete('delete_user/{id}', [AdminController::class, 'delete_user']);
+    Route::get('/admin/orders/filter', [AdminController::class, 'filter_orders'])->name('admin.filter_orders');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

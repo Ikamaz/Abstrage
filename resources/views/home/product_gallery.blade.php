@@ -4,6 +4,10 @@
 <head>
     @include('home.css')
     <style>
+        body {
+            font-family: "Noto Sans Georgian", "Noto Sans", sans-serif !important;
+            background-color: #f8f9fa;
+        }
         .gallery {
             padding: 50px 0;
             text-align: center;

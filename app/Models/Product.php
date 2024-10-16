@@ -8,11 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+
+    protected $fillable = ['title', 'code', 'category', 'quantity', 'description', 'price', 'is_ordered', 'images'];
+
+
     use HasFactory, SoftDeletes;
 
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
     }
 }
 

@@ -16,3 +16,24 @@
         <button onclick="scrollToSection('gallery')">იხილეთ გალერეა</button>
     </div>
 </section>
+
+<script>
+    function initializeCarousel() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentIndex = 0;
+
+        function showNextSlide() {
+            slides[currentIndex].style.opacity = '0';
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].style.opacity = '1';
+        }
+
+        slides[currentIndex].style.opacity = '1';
+        setInterval(showNextSlide, 8000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeLightbox();
+        initializeCarousel();
+    });
+</script>

@@ -13,7 +13,7 @@
             @endif
             <h2>{{ $product->title }}</h2>
             <p>{{ $product->price }} ლარი</p>
-            <a href="{{ url('product_details', $product->id) }}"><button>იხილეთ დეტალურად</button></a>
+            <a href="{{ url('product_details', $product->id) }}" class="btn btn-outline-dark details-btn">იხილეთ დეტალურად</a>
         </div>
     @endforeach
 </section>
