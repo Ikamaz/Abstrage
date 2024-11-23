@@ -11,6 +11,7 @@
         <div class="nav-product">
             <a href="{{ url('/product_gallery') }}">გალერეა</a>
             <a href="{{ url('/all_products') }}">ყველა პროდუქცია</a>
+            <a href="{{url('/contact')}}">კონტაქტი</a>
         </div>
 
         @if (Route::has('login'))
@@ -22,7 +23,7 @@
                     </div>
                     <form method="POST" action="{{ route('logout') }}" style="padding: 10px;">
                         @csrf
-                        <input type="submit" class="btn btn-outline-dark" value="გასვლა">
+                        <input type="submit" class="btn btn-outline-dark logout" value="გასვლა">
                     </form>
                 </div>
             @else

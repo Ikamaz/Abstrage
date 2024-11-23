@@ -140,19 +140,32 @@
                         </div>
 
                         <div class="input_deg">
-                            <label>რაოდენობა</label>
-                            <input type="text" name="qty">
-                        </div>
-
-                        <div class="input_deg">
                             <label>კატეგორია</label>
-                            <select name="category" required>
+                            <select name="category" id="category" required>
                                 <option>აირჩიეთ კატეგორია</option>
-                                @foreach ($category as $category)
-                                <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_name }}"
+                                        @if(old('category') === $category->category_name) selected @endif>
+                                        {{ $category->category_name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="input_deg">
+                            <label>რაოდენობა</label>
+                            @php
+                                $selectedCategory = old('category');
+                            @endphp
+
+                            @if($selectedCategory === 'ნახატი')
+                                <input type="hidden" name="qty" value="1">
+                                <p>Quantity is set to 1 for "ნახატი" category.</p>
+                            @else
+                                <input type="number" name="qty" value="{{ old('qty', 1) }}" min="1">
+                            @endif
+                        </div>
+
 
                         <div class="input_deg">
                             <label>ფოტო</label>
@@ -170,7 +183,8 @@
             </div>
         </div>
     </div>
-    
+
+
     <script>
         function previewImages(event) {
             var preview = document.getElementById('imagePreview');

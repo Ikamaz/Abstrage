@@ -277,7 +277,7 @@
 
                                 <td>
                                     <a class="btn btn-success"
-                                        href="{{ url('update_product', $product->id) }}">რედაქტირება</a>
+                                        href="{{ url('update_product', $product->slug) }}">რედაქტირება</a>
                                 </td>
                                 <td>
                                     <a class="btn btn-danger" onclick="confirmation(event)"

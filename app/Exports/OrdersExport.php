@@ -12,17 +12,19 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldA
 {
     public function collection()
     {
-        return Order::with('product')->get(['name', 'phone', 'rec_address', 'product_id']);
+        return Order::with('product')->get(['name', 'phone', 'rec_address', 'product_id', 'quantity', 'total_price']);
     }
 
     public function headings(): array
     {
         return [
-            'Name',
-            'Phone',
-            'Address',
-            'Product',
-            'Price',
+            'სახელი',
+            'ტელეფონი',
+            'მისამართი',
+            'პროდუქციის კოდი',
+            'პროდუქცია',
+            'რაოდენობა',
+            'სრული ფასი',
         ];
     }
 
@@ -32,8 +34,10 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             $order->name,
             "'".$order->phone,
             $order->rec_address,
+            $order->product->code,
             $order->product->title,
-            $order->product->price,
+            $order->quantity,
+            $order->total_price
         ];
     }
 }

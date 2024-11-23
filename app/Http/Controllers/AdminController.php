@@ -14,6 +14,7 @@ use App\Mail\InvoiceMail;
 use Illuminate\Support\Facades\Mail;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -30,7 +31,7 @@ class AdminController extends Controller
         $category->category_name = $request->category;
         $category->save();
 
-        toastr()->success('კატეგორია დაემატა!');
+        flash()->success('კატეგორია დაემატა!');
         return redirect()->back();
     }
 
@@ -39,9 +40,9 @@ class AdminController extends Controller
         $data = Category::find($id);
         if ($data) {
             $data->delete();
-            toastr()->success('კატეგორია წაიშალა!');
+            flash()->success('კატეგორია წაიშალა!');
         } else {
-            toastr()->error('კატეგორია ვერ მოიძებნა!');
+            flash()->error('კატეგორია ვერ მოიძებნა!');
         }
 
         return redirect()->back();
@@ -60,9 +61,9 @@ class AdminController extends Controller
         if ($data) {
             $data->category_name = $request->category;
             $data->save();
-            toastr()->success('კატეგორია განახლდა!');
+            flash()->success('კატეგორია განახლდა!');
         } else {
-            toastr()->error('კატეგორია ვერ მოიძებნა!');
+            flash()->error('კატეგორია ვერ მოიძებნა!');
         }
 
         return redirect('/view_category');
@@ -70,9 +71,9 @@ class AdminController extends Controller
 
     public function add_product()
     {
-        $category = Category::all();
+        $categories = Category::all();
 
-        return view('admin.add_product', compact('category'));
+        return view('admin.add_product', compact('categories'));
     }
 
     public function upload_product(Request $request)
@@ -100,7 +101,8 @@ class AdminController extends Controller
             }
         }
 
-        toastr()->success('პროდუქცია დაემატა!');
+        flash()->success('პროდუქცია დაემატა!');
+
         return redirect()->back();
     }
 
@@ -135,9 +137,9 @@ class AdminController extends Controller
             ProductImage::where('product_id', $id)->delete();
             $data->delete();
 
-            toastr()->success('პროდუქტი და მისი სურათები წაიშალა!');
+            flash()->success('პროდუქტი და მისი სურათები წაიშალა!');
         } else {
-            toastr()->error('პროდუქტი ვერ მოიძებნა!');
+            flash()->error('პროდუქტი ვერ მოიძებნა!');
         }
 
         return redirect()->back();
@@ -151,20 +153,20 @@ class AdminController extends Controller
             if (file_exists($filePath)) {
                 if (unlink($filePath)) {
                     $image->delete();
-                    toastr()->success('სურათი წარმატებით წაიშალა!');
+                    flash()->success('სურათი წარმატებით წაიშალა!');
                     return response()->json(['success' => true]);
                 }
             }
-            toastr()->error('ფაილის წაშლისას შეცდომა!');
+            flash()->error('ფაილის წაშლისას შეცდომა!');
             return response()->json(['success' => false, 'message' => 'File deletion failed']);
         }
-        toastr()->error('სურათი ვერ მოიძებნა!');
+        flash()->error('სურათი ვერ მოიძებნა!');
         return response()->json(['success' => false, 'message' => 'Image not found']);
     }
 
-    public function update_product($id)
+    public function update_product($slug)
     {
-        $data = Product::find($id);
+        $data = Product::where('slug', $slug)->get()->first();
         $category = Category::all();
 
         return view('admin.update_page', compact('data', 'category'));
@@ -173,11 +175,24 @@ class AdminController extends Controller
     public function edit_product(Request $request, $id)
     {
         $product = Product::find($id);
+
         if ($product) {
+            $request->validate([
+                'code' => 'required|string|max:255',
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'discount_price' => 'nullable|numeric|lt:price',
+                'qty' => 'required|integer|min:0',
+                'category' => 'required|string|max:255',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
             $product->code = $request->code;
             $product->title = $request->title;
             $product->description = $request->description;
             $product->price = $request->price;
+            $product->discount_price = $request->discount_price;
             $product->quantity = $request->qty;
             $product->category = $request->category;
 
@@ -185,6 +200,7 @@ class AdminController extends Controller
                 foreach ($request->file('images') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $file->move(public_path('products'), $filename);
+
                     $image = new ProductImage();
                     $image->image = $filename;
                     $image->product_id = $product->id;
@@ -193,13 +209,15 @@ class AdminController extends Controller
             }
 
             $product->save();
-            toastr()->success('პროდუქცია რედაქტირებულია!');
+
+            flash()->success('პროდუქცია რედაქტირებულია!');
         } else {
-            toastr()->error('პროდუქტი ვერ მოიძებნა!');
+            flash()->error('პროდუქტი ვერ მოიძებნა!');
         }
 
         return redirect('/view_product');
     }
+
 
     public function product_search(Request $request)
     {
@@ -213,17 +231,11 @@ class AdminController extends Controller
                 ->orWhere('price', 'LIKE', '%' . $search . '%');
         })->paginate(5);
 
-        toastr()->info('მოძებნილია პროდუქტები!');
+        flash()->info('მოძებნილია პროდუქტები!');
         return view('admin.view_product', compact('products'));
     }
 
-    public function view_orders()
-    {
-        $data = Order::paginate(5);
-        return view('admin.order', compact('data'));
-    }
-
-    public function filter_orders(Request $request)
+    public function view_orders(Request $request)
     {
         $query = Order::query();
 
@@ -233,19 +245,17 @@ class AdminController extends Controller
             });
         }
 
-        if ($request->filled('product')) {
-            $query->whereHas('products', function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->input('product') . '%');
-            });
-        }
-
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
         $data = $query->paginate(10);
-        toastr()->info('შეკვეთები ფილტრულია!');
-        return view('admin.order', compact('data'));
+
+        if ($request->filled('name') || $request->filled('product') || $request->filled('status')) {
+            flash()->info('შეკვეთები ფილტრულია!');
+        }
+
+        return view('admin.order', compact('data', 'request'));
     }
 
     public function view_users()
@@ -275,7 +285,7 @@ class AdminController extends Controller
         $user->usertype = $request->usertype;
         $user->save();
 
-        toastr()->success('მომხმარებელი განახლდა!');
+        flash()->success('მომხმარებელი განახლდა!');
         return redirect('/view_users');
     }
 
@@ -284,7 +294,7 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        toastr()->success('მომხმარებელი წაიშალა!');
+        flash()->success('მომხმარებელი წაიშალა!');
         return redirect()->back();
     }
     public function markOnTheWay($id)
@@ -294,17 +304,8 @@ class AdminController extends Controller
         if ($order) {
             $order->status = 'on the way';
             $order->save();
-
-            $product = Product::find($order->product_id);
-
-            if ($product) {
-                $product->is_ordered = true; // Mark product as ordered
-                $product->save();
-            }
-
-            return redirect()->back()->with('success', 'შეკვეთა მონიშნულია როგორც გზაშია და პროდუქტი აღარ არის ხელმისაწვდომი.');
+            return redirect()->back()->with('success', 'შეკვეთა გზაშია.');
         }
-
         return redirect()->back()->with('error', 'შეკვეთა ვერ მოიძებნა.');
     }
 
@@ -315,17 +316,8 @@ class AdminController extends Controller
         if ($order) {
             $order->status = 'saved';
             $order->save();
-
-            $product = Product::find($order->product_id);
-
-            if ($product) {
-                $product->is_ordered = true; // Mark product as ordered
-                $product->save();
-            }
-
-            return redirect()->back()->with('success', 'შეკვეთა მონიშნულია როგორც გადანახული და პროდუქტი აღარ არის ხელმისაწვდომი.');
+            return redirect()->back()->with('success', 'შეკვეთა გადადებულია.');
         }
-
         return redirect()->back()->with('error', 'შეკვეთა ვერ მოიძებნა.');
     }
 
@@ -336,72 +328,73 @@ class AdminController extends Controller
         if ($order) {
             $order->status = 'delivered';
             $order->save();
-
-            $product = Product::find($order->product_id);
-
-            if ($product) {
-                $product->is_ordered = true; // Mark product as ordered
-                $product->save();
-            }
-
-            return redirect()->back()->with('success', 'შეკვეთა მონიშნულია როგორც მიტანილი და პროდუქტი აღარ არის ხელმისაწვდომი.');
+            return redirect()->back()->with('success', 'შეკვეთა მიტანილია.');
         }
 
         return redirect()->back()->with('error', 'შეკვეთა ვერ მოიძებნა.');
     }
 
-    public function export_orders()
+    public function exportExcel()
     {
         return Excel::download(new OrdersExport, 'orders.xlsx');
     }
 
+
     public function sendInvoice($id)
     {
-        $order = Order::find($id);
+        $order = Order::with(['user', 'product.images'])->find($id);
 
         if (!$order) {
-            toastr()->error('შეკვეთა ვერ მოიძებნა.');
+            flash()->error('შეკვეთა ვერ მოიძებნა.');
             return redirect()->back();
         }
 
-        if (!$order->user->email) {
-            toastr()->error('ამ შეკვეთის ელფოსტა ვერ მოიძებნა.');
+        if (!$order->user || !$order->user->email) {
+            flash()->error('ამ შეკვეთის ელფოსტა ვერ მოიძებნა.');
             return redirect()->back();
         }
 
         if ($order->product->images->isEmpty()) {
-            toastr()->error('ფოტოსურათი ამ შეკვეთის ვერ მოიძებნა.');
+            flash()->error('ფოტოსურათი ამ შეკვეთის ვერ მოიძებნა.');
             return redirect()->back();
         }
 
         try {
             Mail::to($order->user->email)->send(new InvoiceMail($order));
-            toastr()->success('ინვოისი გაიგზავნა მომხარებლის ელფოსტა:' . $order->user->email, );
+            flash()->success('ინვოისი გაიგზავნა მომხარებლის ელფოსტაზე: ' . $order->user->email);
         } catch (\Exception $e) {
-            \Log::error('Failed to send invoice: ' . $e->getMessage());
-            toastr()->error('ვერ გაიგზავნა ინვოისი, თავიდან სცადეთ.');
+            flash()->error('ვერ გაიგზავნა ინვოისი, თავიდან სცადეთ.');
         }
 
         return redirect()->back();
     }
-
     public function cancelOrder($id)
+{
+    $order = Order::find($id);
+
+    if ($order) {
+        $product = Product::find($order->product_id);
+
+        if ($product) {
+            $product->quantity += $order->quantity;
+            $product->is_ordered = false;
+            $product->save();
+        }
+
+        $order->delete();
+
+        return redirect()->back()->with('success', 'შეკვეთა გაუქმებულია.');
+    }
+
+    return redirect()->back()->with('error', 'შეკვეთა ვერ მოიძებნა.');
+}
+
+    public function printPDF($id)
     {
         $order = Order::find($id);
 
-        if ($order) {
-            $product = Product::find($order->product_id);
+        $pdf = Pdf::loadView('admin.order_pdf', compact('order'));
 
-            if ($product) {
-                $product->is_ordered = false;
-                $product->save();
-            }
-
-            $order->delete();
-
-            return redirect()->back()->with('success', 'შეკვეთა გაუქმებულია.');
-        }
-
-        return redirect()->back()->with('error', 'შეკვეთა ვერ მოიძებნა.');
+        return $pdf->download('invoice.pdf');
     }
 }

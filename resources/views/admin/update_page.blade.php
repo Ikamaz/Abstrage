@@ -159,6 +159,11 @@
                     <label>ფასი</label>
                     <input type="text" name="price" value="{{ $data->price }}" required>
                 </div>
+                <div class="form-group">
+                    <label for="discount_price">ფასდაკლების ფასი</label>
+                    <input type="text" name="discount_price" value="{{ old('discount_price', $data->discount_price) }}">
+                </div>
+
 
                 <div class="form-group">
                     <label>რაოდენობა</label>

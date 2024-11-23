@@ -8,26 +8,30 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-        'name',        // Add this line
-        'product_id',  // Other fillable fields
+        'name',
+        'product_id',
         'quantity',
         'price',
         'user_id',
     ];
-    
+
 
     public function user()
     {
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function product()
     {
-        return $this->hasOne(Product::class,'id','product_id');
+        return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
 
 }

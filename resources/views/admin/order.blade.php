@@ -24,7 +24,6 @@
             background-color: #2D3035;
             border-radius: 8px;
             flex: 1;
-            /* Allow the container to grow and fill space */
         }
 
         h1 {
@@ -167,6 +166,7 @@
                 flex-direction: column;
                 gap: 10px;
             }
+
             .badge {
                 margin-bottom: 5px;
             }
@@ -186,84 +186,77 @@
 
 <body>
     @include('admin.header')
-
     <div class="d-flex">
         @include('admin.sidebar')
-
         <div class="container">
             <h1>შეკვეთების მენეჯმენტი</h1>
             <div class="filter-section">
-                <form action="{{ route('admin.filter_orders') }}" method="GET">
-                    <input type="text" name="name" placeholder="კლიენტის სახელი" id="filter-name">
-                    <input type="text" name="product" placeholder="პროდუქციის სახელი" id="filter-product">
+                <form action="{{ url('view_orders') }}" method="GET">
+                    <input type="text" name="name" placeholder="კლიენტის სახელი" id="filter-name" value="{{ Request::input('name') }}">
                     <select name="status" id="filter-status">
                         <option value="">ყველა სტატუსი</option>
-                        <option value="თქვენი შეკვეთა მუშავდება">თქვენი შეკვეთა მუშავდება</option>
-                        <option value="on the way">გზაშია</option>
-                        <option value="delivered">მიტანილია</option>
-                        <option value="saved">გადანახულია</option>
+                        <option value="თქვენი შეკვეთა მუშავდება" {{ Request::input('status') == 'თქვენი შეკვეთა მუშავდება' ? 'selected' : '' }}>თქვენი შეკვეთა მუშავდება</option>
+                        <option value="on the way" {{ Request::input('status') == 'on the way' ? 'selected' : '' }}>გზაშია</option>
+                        <option value="delivered" {{ Request::input('status') == 'delivered' ? 'selected' : '' }}>მიტანილია</option>
+                        <option value="saved" {{ Request::input('status') == 'saved' ? 'selected' : '' }}>გადადება</option>
                     </select>
                     <div class="bulk-actions">
                         <button type="submit" class="btn btn-secondary">ფილტრაცია</button>
-                        <button class="btn btn-success" id="export-csv"
-                            onclick="window.location='{{ route('export.excel') }}'">
-                            Excel<i class="fa-light fa-file-excel ml-2" style="color: #ffffff;"></i>
-                        </button>
                     </div>
                 </form>
-
-
-            </div>
-
-            @foreach ($data as $order)
-                <div class="order-card">
-                    <img src="/products/{{ $order->product->images->first()->image }}" alt="Product Image">
-                    <div class="order-details">
-                        <p><strong>კლიენტის სახელი:</strong> {{ $order->name }}</p>
-                        <p><strong>ნივთი სახელი:</strong> {{ $order->product->title }}</p>
-                        <p><strong>მისამართი:</strong> <input type="text" class="editable-input"
-                                value="{{ $order->rec_address }}" style="border:none; background: transparent;"></p>
-                        <p><strong>საკონტაქტო ნომერი:</strong> <input type="text" class="editable-input"
-                                value="{{ $order->phone }}" style="border:none; background: transparent;"></p>
-                        <p><strong>ფასი:</strong> {{ $order->product->price }}</p>
-                        <span
-                            class="badge
+                <button class="btn btn-success" id="export-csv" onclick="window.location='{{ route('export.excel') }}'">
+                    Excel<i class="fa-light fa-file-excel ml-2" style="color: #ffffff;"></i>
+                </button>
+        </div>
+        @foreach ($data as $order)
+            <div class="order-card">
+                <img src="/products/{{ $order->product->images->first()->image }}" alt="Product Image">
+                <div class="order-details">
+                    <p><strong>კლიენტის სახელი:</strong> {{ $order->name }}</p>
+                    <p><strong>ნივთი სახელი:</strong> {{ $order->product->title }}</p>
+                    <p><strong>მისამართი:</strong> <input type="text" class="editable-input"
+                            value="{{ $order->rec_address }}" style="border:none; background: transparent;"></p>
+                    <p><strong>საკონტაქტო ნომერი:</strong> <input type="text" class="editable-input"
+                            value="{{ $order->phone }}" style="border:none; background: transparent;"></p>
+                    <p><strong>რაოდენობა:</strong> {{ $order->quantity }}</p>
+                    <p><strong>სრული ფასი:</strong> {{ $order->total_price }}</p>
+                    <p><strong>შეკვეთა შექმნილია:</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
+                    <span
+                        class="badge
                         @if ($order->status == 'in progress' || $order->status == 'თქვენი შეკვეთა მუშავდება') badge-in-progress
                         @elseif($order->status == 'on the way' || $order->status == 'გზაშია!') badge-on-the-way
-                        @elseif($order->status == 'saved' || $order->status == 'გადანახულია!') badge-saved
+                        @elseif($order->status == 'saved' || $order->status == 'გადადება!') badge-saved
                         @else badge-delivered @endif">
-                            @if ($order->status == 'in progress' || $order->status == 'თქვენი შეკვეთა მუშავდება')
-                                <span class="status-in-progress">{{ $order->status }}</span>
-                            @elseif($order->status == 'on the way' || $order->status == 'გზაშია!')
-                                <span class="status-on-the-way">
-                                    <i class="fa-solid fa-truck"></i> გზაშია!
-                                </span>
-                            @elseif($order->status == 'saved' || $order->status == 'გადანახულია!')
-                                <span class="status-saved">
-                                    <i class="fa-solid fa-box-circle-check" style="color: #ffffff;"></i> გადანახულია!
-                                </span>
-                            @else
-                                <span class="status-delivered">
-                                    <i class="fa-solid fa-box-open"></i> მიტანილია!
-                                </span>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="order-actions">
-                        <a href="{{ url('on_the_way', $order->id) }}" class="btn btn-danger">გზაშია</a>
-                        <a href="{{ url('delivered', $order->id) }}" class="btn btn-success">მიტანილია</a>
-                        <a href="{{ url('saved', $order->id) }}" class="btn btn-info">გადანახულია</a>
-                        <a href="{{ url('print_pdf', $order->id) }}" class="btn btn-primary">PDF</a>
-                        <a href="{{ url('send_invoice', $order->id) }}" class="btn btn-error">ინვოისის გაგზავნა</a>
-                        <button class="btn btn-light" onclick="confirmCancel({{ $order->id }})">გაუქმება</button>
-                    </div>
+                        @if ($order->status == 'in progress' || $order->status == 'თქვენი შეკვეთა მუშავდება')
+                            <span class="status-in-progress">{{ $order->status }}</span>
+                        @elseif($order->status == 'on the way' || $order->status == 'გზაშია!')
+                            <span class="status-on-the-way">
+                                <i class="fa-solid fa-truck"></i> გზაშია!
+                            </span>
+                        @elseif($order->status == 'saved' || $order->status == 'გადადება!')
+                            <span class="status-saved">
+                                <i class="fa-solid fa-box-circle-check" style="color: #ffffff;"></i> გადადება!
+                            </span>
+                        @else
+                            <span class="status-delivered">
+                                <i class="fa-solid fa-box-open"></i> მიტანილია!
+                            </span>
+                        @endif
+                    </span>
                 </div>
-            @endforeach
-        </div>
+                <div class="order-actions">
+                    <a href="{{ url('on_the_way', $order->id) }}" class="btn btn-danger">გზაშია</a>
+                    <a href="{{ url('delivered', $order->id) }}" class="btn btn-success">მიტანილია</a>
+                    <a href="{{ url('saved', $order->id) }}" class="btn btn-info">გადადება</a>
+                    <a href="{{ url('print_pdf', $order->id) }}" class="btn btn-primary">PDF</a>
+                    <a href="{{ url('send_invoice', $order->id) }}" class="btn btn-error">ინვოისის გაგზავნა</a>
+                    <button class="btn btn-light" onclick="confirmCancel({{ $order->id }})">გაუქმება</button>
+                </div>
+            </div>
+        @endforeach
     </div>
-
+    </div>
     {{ $data->links() }}
-
     <script>
         function confirmCancel(orderId) {
             if (confirm('დარწმუნებული ხარ ამ შეკვეთის გაუქმება გინდა ?')) {
@@ -271,7 +264,6 @@
             }
         }
     </script>
-
     @include('admin.js')
 </body>
 

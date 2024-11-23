@@ -25,7 +25,10 @@ class HomeController extends Controller
 
     public function home()
     {
-        $products = Product::all();
+        $products = Product::where('is_ordered', false)
+            ->orderBy('created_at', 'desc')
+            ->limit(9)
+            ->get();
         $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
         return view('home.index', compact('products', 'count'));
@@ -52,27 +55,41 @@ class HomeController extends Controller
         return view('home.product_details', compact('data', 'relatedProducts', 'count'));
     }
 
-    public function add_cart($id)
+    public function add_cart(Request $request, $id)
     {
         $user = Auth::user();
         $userid = $user->id;
+        $quantity = $request->input('quantity', 1);
 
-        $existing_cart_item = Cart::where('user_id', $userid)
-            ->where('product_id', $id)
-            ->first();
+        $product = Product::find($id);
 
-        if ($existing_cart_item) {
-            return redirect()->back()->with('error', 'პროდუქტი უკვე კალათშია!');
+        $cartItem = Cart::where('user_id', $userid)->where('product_id', $id)->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $quantity;
+            $cartItem->discount_price = $this->calculateDiscount($product->price, $cartItem->quantity);
+            $cartItem->save();
+            return redirect()->back()->with('success', 'პროდუქციის რაოდენობა განახლდა კალათაში.');
+        } else {
+            $finalPrice = $product->final_price;
+
+
+            Cart::create([
+                'user_id' => $userid,
+                'product_id' => $id,
+                'quantity' => $quantity,
+                'discount_price' => $finalPrice * $quantity,
+            ]);
+
+            return redirect()->back()->with('success', 'პროდუქცია დამატებულია კალათაში.');
         }
+    }
 
-        Cart::create([
-            'user_id' => $userid,
-            'product_id' => $id,
-        ]);
-
-        flash()->success('წარმატებით დაემატა კალათაში');
-
-        return redirect()->back();
+    private function calculateDiscount($price, $quantity)
+    {
+        $discountRate = 0.1;
+        $totalPrice = $price * $quantity;
+        return $totalPrice - ($totalPrice * $discountRate);
     }
 
     public function mycart()
@@ -82,10 +99,33 @@ class HomeController extends Controller
         }
 
         $userid = Auth::id();
+        $cart = Cart::where('user_id', $userid)->get();
+
+        foreach ($cart as $item) {
+            $product = Product::find($item->product_id);
+            if ($product && $product->is_ordered) {
+                $item->delete();
+            }
+        }
         $count = Cart::where('user_id', $userid)->count();
         $cart = Cart::where('user_id', $userid)->get();
 
         return view('home.mycart', compact('count', 'cart'));
+    }
+
+    public function updateCart(Request $request, $cartId)
+    {
+        $cartItem = Cart::find($cartId);
+        if ($cartItem) {
+            if ($request->input('action') === 'increment') {
+                $cartItem->quantity += 1;
+            } elseif ($request->input('action') === 'decrement' && $cartItem->quantity > 1) {
+                $cartItem->quantity -= 1;
+            }
+            $cartItem->save();
+        }
+
+        return redirect()->back();
     }
 
     public function delete_cart($id)
@@ -105,82 +145,115 @@ class HomeController extends Controller
         $phone = $request->input('phone');
         $userid = Auth::user()->id;
         $cart = Cart::where('user_id', $userid)->get();
+        $alreadyOrderedProducts = [];
 
         foreach ($cart as $carts) {
-            $order = new Order;
-            $order->name = $name;
-            $order->rec_address = $address;
-            $order->phone = $phone;
-            $order->user_id = $userid;
-            $order->product_id = $carts->product_id;
-            $order->save();
             $product = Product::find($carts->product_id);
+
             if ($product) {
-                $product->is_ordered = true;
-                $product->save();
+                $finalPrice = $product->price;
+
+                if ($product->discount_price) {
+                    $finalPrice = $product->discount_price;
+                } elseif ($product->discount_percentage) {
+                    $finalPrice = $product->price - ($product->price * ($product->discount_percentage / 100));
+                }
+
+                $totalPrice = $finalPrice * $carts->quantity;
+
+                if ($product->quantity >= $carts->quantity) {
+                    $order = new Order;
+                    $order->name = $name;
+                    $order->rec_address = $address;
+                    $order->phone = $phone;
+                    $order->user_id = $userid;
+                    $order->product_id = $carts->product_id;
+                    $order->quantity = $carts->quantity;
+                    $order->total_price = $totalPrice;  // Set total price
+                    $order->save();
+
+                    $product->quantity -= $carts->quantity;
+
+                    if ($product->quantity == 0) {
+                        $product->is_ordered = true;
+                    }
+
+                    $product->save();
+                } else {
+                    $alreadyOrderedProducts[] = $product->name;
+                }
             }
         }
+
         Cart::where('user_id', $userid)->delete();
 
-        flash()->success('თქვენი პროდუქცია გადანახულია');
-
-        return redirect()->back();
+        return redirect()->back()->with('alreadyOrderedProducts', $alreadyOrderedProducts);
     }
+
+
     public function all_products(Request $request)
     {
-        $query = Product::query();
+        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
-        // Build cache key based on request parameters
+        $filters = $request->only(['category', 'min_price', 'max_price', 'sort']);
+        foreach ($filters as $key => $value) {
+            if (!$request->has($key) && session()->has($key)) {
+                $filters[$key] = session()->get($key);
+            }
+            session()->put($key, $filters[$key]);
+        }
+
+        $query = Product::query();
         $cacheKey = 'products.' . md5($request->fullUrl());
 
-        // Attempt to get cached products
-        $products = Cache::remember($cacheKey, 60, function () use ($query, $request) {
-            // Filtering by category
-            if ($request->filled('category') && $request->category !== 'all') {
-                $query->where('category', $request->category);
+        $products = Cache::remember($cacheKey, 60, function () use ($query, $filters) {
+            if (!empty($filters['category']) && $filters['category'] !== 'all') {
+                $query->where('category', $filters['category']);
             }
 
-            // Filtering by price range
-            if ($request->filled('min_price')) {
-                $query->where('price', '>=', $request->min_price);
-            }
-            if ($request->filled('max_price')) {
-                $query->where('price', '<=', $request->max_price);
+            if (!empty($filters['min_price'])) {
+                $query->where('price', '>=', $filters['min_price']);
             }
 
-            // Ensure min_price is less than max_price
-            if ($request->filled('min_price') && $request->filled('max_price') && $request->min_price > $request->max_price) {
+            if (!empty($filters['max_price'])) {
+                $query->where('price', '<=', $filters['max_price']);
+            }
+
+            if (!empty($filters['min_price']) && !empty($filters['max_price']) && $filters['min_price'] > $filters['max_price']) {
                 return redirect()->back()->withErrors(['price' => 'Min price cannot be greater than Max price']);
             }
 
-            // Sorting
-            if ($request->filled('sort')) {
-                if ($request->sort === 'price-asc') {
+            if (!empty($filters['sort'])) {
+                if ($filters['sort'] === 'price-asc') {
                     $query->orderBy('price', 'asc');
-                } elseif ($request->sort === 'price-desc') {
+                } elseif ($filters['sort'] === 'price-desc') {
                     $query->orderBy('price', 'desc');
                 }
             }
 
-            // Fetch products with pagination
+            $query->orderBy('is_ordered', 'asc');
+
             return $query->paginate(9);
         });
 
-        // Fetch unique categories for the filter
         $uniqueCategories = Product::distinct()->pluck('category');
 
-        return view('home.all_products', compact('products', 'uniqueCategories'));
+        return view('home.all_products', compact('products', 'uniqueCategories', 'count'));
     }
-
 
 
     public function product_gallery()
     {
-        $products = Product::where('category', 'ნახატი')->with('images')->get();
+        $products = Product::where('category', 'ნახატი')
+            ->where('is_ordered', false)
+            ->with('images')
+            ->paginate(10);
+
         $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
 
-        return view('home.product_gallery', compact('count', 'products', ));
+        return view('home.product_gallery', compact('count', 'products'));
     }
+
 
     public function contact()
     {
@@ -191,14 +264,13 @@ class HomeController extends Controller
 
     public function myorders()
     {
-
-        $user = Auth::user()->id;
-
-        $count = Auth::check() ? Cart::where('user_id', Auth::id())->count() : 0;
-
-        $order = Order::where('user_id', $user)->get();
-
+        $user = Auth::id();
+        $count = Auth::check() ? Cart::where('user_id', $user)->count() : 0;
+        $order = Order::where('user_id', $user)
+            ->with('product')
+            ->get();
 
         return view('home.myorder', compact('count', 'order'));
     }
+
 }

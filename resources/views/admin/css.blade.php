@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css">
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css">
 <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css">
-<link rel="stylesheet" href="/admincss/css/fonts/fonts.css">
+<link rel="stylesheet" href="{{ asset('/admincss/css/fonts/fonts.css')}}">
 
 <style>
     body {

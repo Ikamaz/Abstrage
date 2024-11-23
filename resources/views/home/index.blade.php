@@ -8,7 +8,6 @@
 </head>
 
 <body>
-    <!-- Navigation Bar -->
     @include('home.header')
     <!-- Hero Section -->
     @include('home.hero')
@@ -16,8 +15,6 @@
     @include('home.gallery')
     <!-- Footer -->
     @include('home.footer')
-
-
     @include('home.js')
 </body>
 

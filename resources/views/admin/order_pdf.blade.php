@@ -120,7 +120,6 @@
             <p><strong>კლიენტის სახელი:</strong> {{ $order->name }}</p>
             <p><strong>კლიენტის მისამართი:</strong> {{ $order->rec_address }}</p>
             <p><strong>კლიენტის ტელეფონის ნომერი:</strong> {{ $order->phone }}</p>
-            <p><strong>კლიენტის სტატუსი:</strong> {{ $order->status }}</p>
         </div>
         <div class="product-info">
             <img src="{{ public_path('products/' . $order->product->images->first()->image) }}" alt="Product Image">

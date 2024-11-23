@@ -202,10 +202,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- User Pagination -->
                     {{ $users->links() }}
-
                 </div>
             </div>
         </div>
